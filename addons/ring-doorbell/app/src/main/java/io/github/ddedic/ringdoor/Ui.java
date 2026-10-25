@@ -53,14 +53,28 @@ final class Ui {
         return view;
     }
 
-    /** The screens' backdrop: a warm glow from the top left over near-black. */
+    /** The screens' backdrop: the generated ember-glow art under a scrim that darkens towards the right. */
     static android.graphics.drawable.Drawable backdrop(Context c) {
-        GradientDrawable glow = new GradientDrawable();
-        glow.setGradientType(GradientDrawable.RADIAL_GRADIENT);
-        glow.setGradientCenter(0.15f, 0.1f);
-        glow.setGradientRadius(c.getResources().getDisplayMetrics().widthPixels * 0.9f);
-        glow.setColors(new int[]{0xFF2A1C12, 0xFF0D0E12, 0xFF08090C});
-        return glow;
+        GradientDrawable scrim = new GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT,
+                new int[]{0x55000000, 0x99000000, 0xD9000000});
+        return new android.graphics.drawable.LayerDrawable(new android.graphics.drawable.Drawable[]{
+                c.getDrawable(R.drawable.bg_door), scrim});
+    }
+
+    /** A setting's value as a chip: On is a white pill, Off an outline, anything else a soft pill. */
+    static TextView chip(Context c, String value, String on, String off) {
+        TextView chip = medium(c, value, 15, 0xFFFFFFFF);
+        chip.setPadding(dp(c, 16), dp(c, 7), dp(c, 16), dp(c, 7));
+        if (value.equals(on)) {
+            chip.setTextColor(0xFF000000);
+            chip.setBackground(rounded(c, 0xFFFFFFFF, 16, 0));
+        } else if (value.equals(off)) {
+            chip.setTextColor(0x99FFFFFF);
+            chip.setBackground(rounded(c, 0x00000000, 16, 0x55FFFFFF));
+        } else {
+            chip.setBackground(rounded(c, 0x33FF8A3D, 16, 0));
+        }
+        return chip;
     }
 
     /** A 16:9 picture frame: a soft empty state (door icon and a line) under the picture's ImageView, last child. */

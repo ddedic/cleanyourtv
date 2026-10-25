@@ -35,7 +35,7 @@
 
         <activity
             android:name=".PreviewActivity"
-            android:exported="false"
+            android:exported="true"
             android:excludeFromRecents="true"
             android:screenOrientation="landscape"
             android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" />

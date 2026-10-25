@@ -128,7 +128,7 @@ public final class SettingsActivity extends Activity {
         row.setFocusable(true);
         row.setTag(key);
         row.setOnFocusChangeListener((v, has) -> v.setBackground(
-                Ui.rounded(this, has ? 0x33FFFFFF : 0x10FFFFFF, 18, has ? 0xFFFFFFFF : 0)));
+                Ui.rounded(this, has ? 0x40FFFFFF : 0x1AFFFFFF, 18, has ? 0xFFFFFFFF : 0)));
         row.setOnClickListener(v -> { focusKey = key; change.run(); render(); });
     }
 
@@ -140,13 +140,14 @@ public final class SettingsActivity extends Activity {
         LinearLayout row = new LinearLayout(this);
         row.setGravity(Gravity.CENTER_VERTICAL);
         row.setPadding(Ui.dp(this, 20), Ui.dp(this, 14), Ui.dp(this, 20), Ui.dp(this, 14));
-        row.setBackground(Ui.rounded(this, 0x10FFFFFF, 18, 0));
+        row.setBackground(Ui.rounded(this, 0x1AFFFFFF, 18, 0));
+        row.setMinimumHeight(Ui.dp(this, 64));
         LinearLayout lines = new LinearLayout(this);
         lines.setOrientation(LinearLayout.VERTICAL);
         lines.addView(Ui.text(this, label, 18, 0xFFFFFFFF));
         if (!sub.isEmpty()) lines.addView(Ui.text(this, sub, 13, Ui.DIM));
         row.addView(lines, new LinearLayout.LayoutParams(0, -2, 1));
-        if (!value.isEmpty()) row.addView(Ui.medium(this, value, 17, Ui.RING));
+        if (!value.isEmpty()) row.addView(Ui.chip(this, value, getString(R.string.on), getString(R.string.off)));
         LinearLayout.LayoutParams at = new LinearLayout.LayoutParams(-1, -2);
         at.topMargin = Ui.dp(this, 8);
         rows.addView(row, at);
