@@ -618,6 +618,9 @@ and a wallpaper.
   - **Home at power-on**, only with a `live_tv_package`: the on-TV switch for `power_on_home`. **Remote button
     helper**: the on-TV switch for `key_filter`, applied to the bound key services at once. Both override
     `config.xml` and the theme, and Follow theme leaves them as they are.
+  - **Rakuten TV button** and **Philips apps button**, on Philips TVs only: the remote buttons whose app the
+    debloat disabled open the app picked here instead (the firmware sends a plain action that the launcher then
+    answers). Off leaves them to the TV; no key is filtered, so volume repeat stays.
   - **Inputs** goes back to Home with the input list open. **TV system settings** opens the TV's own
     settings page, **Android settings** Android TV's own one where the firmware answers with another
     (Philips), **Network settings** the network page and **Apps** the list of installed apps.

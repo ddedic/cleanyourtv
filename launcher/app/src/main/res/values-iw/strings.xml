@@ -71,6 +71,10 @@
     <string name="settings_group_remote">שלט והפעלה</string>
     <string name="settings_group_tv">טלוויזיה ומערכת</string>
     <string name="featured_state">מדף מומלצים: %1$s</string>
+    <string name="settings_group_buttons">כפתורי השלט</string>
+    <string name="button_rakuten_state">כפתור Rakuten TV: %1$s</string>
+    <string name="button_gallery_state">כפתור האפליקציות של Philips: %1$s</string>
+    <string name="buttons_hint">לכפתורים שהאפליקציה שלהם הוסרה: הם פותחים את האפליקציה שבחרת. כבוי משאיר אותם לטלוויזיה.</string>
     <string name="featured_tint_state">צבע מהתמונה: %1$s</string>
     <string name="featured_hint">המדף המתחלף מעל ה-Dock, שממלאת אפליקציית הפיד שמוגדרת ב-featured_feed.</string>
     <string name="key_filter_state">מסייע כפתורי השלט: %1$s</string>

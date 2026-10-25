@@ -170,6 +170,35 @@
             </intent-filter>
         </activity>
 
+        <!-- Philips remote buttons whose app is gone (ButtonActivity): disabled until Launcher settings gives the
+             button an app, so a TV that still has that app never sees a chooser. -->
+        <activity
+            android:name=".ButtonActivity"
+            android:exported="false"
+            android:excludeFromRecents="true"
+            android:noHistory="true"
+            android:theme="@android:style/Theme.NoDisplay" />
+        <activity-alias
+            android:name=".RakutenButton"
+            android:targetActivity=".ButtonActivity"
+            android:exported="true"
+            android:enabled="false">
+            <intent-filter>
+                <action android:name="org.droidtv.tv.intent.action.LAUNCH_RAKUTEN_TV" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity-alias>
+        <activity-alias
+            android:name=".AppGalleryButton"
+            android:targetActivity=".ButtonActivity"
+            android:exported="true"
+            android:enabled="false">
+            <intent-filter>
+                <action android:name="org.droidtv.ACTION.LAUNCH_APP_GALLERY" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity-alias>
+
         <!-- The same clock, started by Home itself after home_idle_clock_minutes without input. -->
         <activity
             android:name=".ClockActivity"

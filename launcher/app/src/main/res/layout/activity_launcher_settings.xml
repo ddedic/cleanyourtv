@@ -196,6 +196,29 @@
                 style="@style/SettingsRow"
                 android:visibility="gone" />
 
+            <!-- Remote buttons: Philips only -->
+            <TextView
+                android:id="@+id/buttonsGroup"
+                style="@style/SettingsGroup"
+                android:text="@string/settings_group_buttons"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/rakutenButtonChoice"
+                style="@style/SettingsRow"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/galleryButtonChoice"
+                style="@style/SettingsRow"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/buttonsHint"
+                style="@style/SettingsHint"
+                android:text="@string/buttons_hint"
+                android:visibility="gone" />
+
             <!-- TV & system -->
             <TextView style="@style/SettingsGroup" android:text="@string/settings_group_tv" />
 

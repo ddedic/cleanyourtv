@@ -37,6 +37,7 @@ public final class LauncherSettingsActivity extends Activity {
     private TextView keyFilterChoice;
     private TextView powerOnHomeChoice;
     private TextView featuredChoice;
+    private TextView rakutenButtonChoice, galleryButtonChoice;
     private TextView featuredTintChoice;
     private boolean featuredTint;
     private boolean keyFilter;
@@ -206,6 +207,15 @@ public final class LauncherSettingsActivity extends Activity {
                 refresh();
             });
         }
+        rakutenButtonChoice = findViewById(R.id.rakutenButtonChoice);
+        galleryButtonChoice = findViewById(R.id.galleryButtonChoice);
+        if (ButtonActivity.offered()) {
+            for (int id : new int[]{R.id.buttonsGroup, R.id.rakutenButtonChoice, R.id.galleryButtonChoice, R.id.buttonsHint}) {
+                findViewById(id).setVisibility(View.VISIBLE);
+            }
+            rakutenButtonChoice.setOnClickListener(v -> showButtonPicker("rakuten"));
+            galleryButtonChoice.setOnClickListener(v -> showButtonPicker("gallery"));
+        }
         keyFilter = config.keyFilter;
         powerOnHome = config.powerOnHome;
         keyFilterChoice = findViewById(R.id.keyFilterChoice);
@@ -329,6 +339,50 @@ public final class LauncherSettingsActivity extends Activity {
                 .show();
     }
 
+    /** Remote buttons: Off, or every app with a TV entry point by name. */
+    private void showButtonPicker(String key) {
+        PackageManager pm = getPackageManager();
+        List<String[]> apps = new ArrayList<>();
+        Intent tv = new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LEANBACK_LAUNCHER);
+        for (ResolveInfo r : pm.queryIntentActivities(tv, 0)) {
+            String pkg = r.activityInfo.packageName;
+            if (pkg.equals(getPackageName())) continue;
+            boolean seen = false;
+            for (String[] a : apps) seen |= a[1].equals(pkg);
+            if (!seen) apps.add(new String[]{r.loadLabel(pm).toString(), pkg});
+        }
+        Collections.sort(apps, (a, b) -> a[0].compareToIgnoreCase(b[0]));
+        String[] labels = new String[apps.size() + 1];
+        labels[0] = getString(R.string.off);
+        String current = ButtonActivity.app(this, key);
+        int checked = 0;
+        for (int i = 0; i < apps.size(); i++) {
+            labels[i + 1] = apps.get(i)[0];
+            if (apps.get(i)[1].equals(current)) checked = i + 1;
+        }
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.settings_group_buttons)
+                .setSingleChoiceItems(labels, checked, (dialog, which) -> {
+                    dialog.dismiss();
+                    ButtonActivity.set(this, key, which == 0 ? "" : apps.get(which - 1)[1]);
+                    refresh();
+                })
+                .setNegativeButton(android.R.string.cancel, null)
+                .show();
+    }
+
+    /** A button's app by name, its package when it is gone, or Off. */
+    private String buttonLabel(String key) {
+        String pkg = ButtonActivity.app(this, key);
+        if (pkg.isEmpty()) return getString(R.string.off);
+        try {
+            PackageManager pm = getPackageManager();
+            return pm.getApplicationLabel(pm.getApplicationInfo(pkg, 0)).toString();
+        } catch (PackageManager.NameNotFoundException e) {
+            return pkg;
+        }
+    }
+
     /** The picked app's name, its package when it is gone, or Off. */
     private String openOnStartLabel() {
         String pkg = choices.getString(OpenOnStart.KEY, "");
@@ -390,6 +444,8 @@ public final class LauncherSettingsActivity extends Activity {
         openOnStartChoice.setText(getString(R.string.open_on_start_state, openOnStartLabel()));
         followThemeChoice.setSelected(!hasOnTvChoices());
         keyFilterChoice.setText(getString(R.string.key_filter_state, getString(keyFilter ? R.string.on : R.string.off)));
+        rakutenButtonChoice.setText(getString(R.string.button_rakuten_state, buttonLabel("rakuten")));
+        galleryButtonChoice.setText(getString(R.string.button_gallery_state, buttonLabel("gallery")));
         featuredTintChoice.setText(getString(R.string.featured_tint_state,
                 getString(featuredTint ? R.string.on : R.string.off)));
         featuredChoice.setText(getString(R.string.featured_state,
