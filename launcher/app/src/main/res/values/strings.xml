@@ -65,6 +65,15 @@
     <string name="follow_theme">Follow theme (reset on-TV choices)</string>
     <string name="follow_theme_hint">Uses the current theme or built-in layout and motion settings. Pushing or resetting a theme also clears your on-TV choices.</string>
     <string name="tv_settings">TV system settings</string>
+    <string name="android_settings">Android settings</string>
+    <string name="network_settings">Network settings</string>
+    <string name="apps_settings">Apps</string>
+    <string name="original_launcher">Open original launcher</string>
+    <string name="original_launcher_off">The original launcher is disabled. Turn it back on over ADB (pm enable, or the restore script) to open it from here.</string>
+    <string name="power_on_home_state">Home at power-on: %1$s</string>
+    <string name="power_on_home_hint">When the TV opens Live TV by itself as it switches on, go to Home instead. Needs the Home key helper.</string>
+    <string name="key_filter_state">Remote button helper: %1$s</string>
+    <string name="key_filter_hint">On: the launcher handles the remote\'s Settings and app buttons, but some TVs then step Volume only once when held. Off: Volume repeats again and those buttons do nothing.</string>
     <string name="quick_picture">Display</string>
     <string name="quick_network">Network</string>
     <string name="quick_apps">Apps</string>

@@ -58,8 +58,10 @@ class TestKeyFilterWiring(unittest.TestCase):
                       "applyKeyFilter must clear FLAG_REQUEST_FILTER_KEY_EVENTS when key_filter is false")
         self.assertIn('setServiceInfo', REMOTE_KEYS,
                       "applyKeyFilter must apply the info back through setServiceInfo()")
-        self.assertRegex(REMOTE_KEYS, r'if \(keyFilter\) return',
-                         "applyKeyFilter must be a no-op when key_filter is true")
+        # Launcher settings switches it both ways while the service is bound, so it sets the flag back
+        # too, and leaves the info alone when the flag already matches (key_filter true on a fresh bind).
+        self.assertRegex(REMOTE_KEYS, r'if \(filtering == keyFilter\) return',
+                         "applyKeyFilter must be a no-op when the flag already matches key_filter")
 
     def test_both_services_apply_it(self):
         for name, src in (("HomeKeyService", HOME_KEY), ("InputKeyService", INPUT_KEY)):

@@ -3,6 +3,7 @@ package com.gathin.tvhome;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -22,7 +23,21 @@ import java.util.List;
 /** Remote-friendly settings owned by the launcher; system settings stay one row away. */
 public final class LauncherSettingsActivity extends Activity {
     static final String EXTRA_REORDER = "com.gathin.tvhome.extra.REORDER_FROM_SETTINGS";
+    static final String EXTRA_DOCK_EDIT = "com.gathin.tvhome.extra.DOCK_EDIT_FROM_SETTINGS";
+    static final String EXTRA_INPUTS = "com.gathin.tvhome.extra.INPUTS_FROM_SETTINGS";
+    private static final String[] HOME_ACTIONS = {EXTRA_REORDER, EXTRA_DOCK_EDIT, EXTRA_INPUTS};
+
+    /** The action these settings hand back to Home (reorder, edit the dock, open Inputs), or null. */
+    static String homeAction(Intent intent) {
+        for (String action : HOME_ACTIONS) if (intent.getBooleanExtra(action, false)) return action;
+        return null;
+    }
+
     private SharedPreferences choices;
+    private TextView keyFilterChoice;
+    private TextView powerOnHomeChoice;
+    private boolean keyFilter;
+    private boolean powerOnHome;
     private final TextView[] columnChoices = new TextView[4];
     private final TextView[] rowChoices = new TextView[4];
     private static final int[] DOCK_OPACITIES = {100, 70, 50, 30};
@@ -46,10 +61,12 @@ public final class LauncherSettingsActivity extends Activity {
         Config config = Config.load(this);
         View reorderChoice = findViewById(R.id.reorderChoice);
         reorderChoice.setVisibility(config.launcherSettingsButton ? View.VISIBLE : View.GONE);
-        reorderChoice.setOnClickListener(v -> {
-            setResult(RESULT_OK, new Intent().putExtra(EXTRA_REORDER, true));
-            finish();
-        });
+        reorderChoice.setOnClickListener(v -> backToHome(EXTRA_REORDER));
+        View dockEditChoice = findViewById(R.id.dockEditChoice);
+        dockEditChoice.setVisibility(config.launcherSettingsButton && !config.dockApps.isEmpty()
+                ? View.VISIBLE : View.GONE);
+        dockEditChoice.setOnClickListener(v -> backToHome(EXTRA_DOCK_EDIT));
+        findViewById(R.id.sourcesChoice).setOnClickListener(v -> backToHome(EXTRA_INPUTS));
         columns = config.columns;
         rowsBelowDock = config.rowsBelowDock;
         dockOpacity = config.dockOpacity;
@@ -149,9 +166,67 @@ public final class LauncherSettingsActivity extends Activity {
         });
         findViewById(R.id.tvSettingsChoice).setOnClickListener(v ->
                 open(SystemSettings.intent(this, Settings.ACTION_SETTINGS)));
+        // Firmware with its own settings app (Philips) answers ACTION_SETTINGS with it; the Android TV one
+        // still holds pages it has no row for.
+        Intent androidSettings = new Intent(Settings.ACTION_SETTINGS).setPackage("com.android.tv.settings");
+        ResolveInfo vendor = getPackageManager().resolveActivity(new Intent(Settings.ACTION_SETTINGS), 0);
+        if (getPackageManager().resolveActivity(androidSettings, 0) != null && vendor != null
+                && !"com.android.tv.settings".equals(vendor.activityInfo.packageName)) {
+            View row = findViewById(R.id.androidSettingsChoice);
+            row.setVisibility(View.VISIBLE);
+            row.setOnClickListener(v -> open(androidSettings));
+        }
+        findViewById(R.id.networkChoice).setOnClickListener(v -> open(new Intent(Settings.ACTION_WIFI_SETTINGS)));
+        findViewById(R.id.appsChoice).setOnClickListener(v -> open(new Intent(Settings.ACTION_APPLICATION_SETTINGS)));
+        findViewById(R.id.originalLauncherChoice).setOnClickListener(v -> {
+            ComponentName stock = originalLauncher();
+            if (stock == null) Toast.makeText(this, R.string.original_launcher_off, Toast.LENGTH_LONG).show();
+            else open(new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME).setComponent(stock));
+        });
+        keyFilter = config.keyFilter;
+        powerOnHome = config.powerOnHome;
+        keyFilterChoice = findViewById(R.id.keyFilterChoice);
+        keyFilterChoice.setOnClickListener(v -> {
+            keyFilter = !keyFilter;
+            choices.edit().putBoolean(Config.KEY_FILTER_KEY, keyFilter).commit();
+            HomeKeyService.applyChoices();
+            InputKeyService.applyChoices();
+            refresh();
+        });
+        powerOnHomeChoice = findViewById(R.id.powerOnHomeChoice);
+        if (!config.liveTvPackage.isEmpty()) {
+            powerOnHomeChoice.setVisibility(View.VISIBLE);
+            findViewById(R.id.powerOnHomeHint).setVisibility(View.VISIBLE);
+            powerOnHomeChoice.setOnClickListener(v -> {
+                powerOnHome = !powerOnHome;
+                choices.edit().putBoolean(Config.POWER_ON_HOME_KEY, powerOnHome).commit();
+                HomeKeyService.applyChoices();
+                refresh();
+            });
+        }
         refresh();
         if (config.launcherSettingsButton) reorderChoice.requestFocus();
         else columnChoices[Math.max(0, Math.min(columns - 4, 3))].requestFocus();
+    }
+
+    private void backToHome(String action) {
+        setResult(RESULT_OK, new Intent().putExtra(action, true));
+        finish();
+    }
+
+    /**
+     * The firmware's own home screen, if it is still enabled: any other HOME activity except this launcher,
+     * Settings' FallbackHome (negative priority) and the Google TV setup wizard.
+     */
+    private ComponentName originalLauncher() {
+        Intent home = new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME);
+        for (ResolveInfo r : getPackageManager().queryIntentActivities(home, 0)) {
+            String pkg = r.activityInfo.packageName;
+            if (pkg.equals(getPackageName()) || r.priority < 0
+                    || pkg.equals("com.google.android.tungsten.setupwraith")) continue;
+            return new ComponentName(pkg, r.activityInfo.name);
+        }
+        return null;
     }
 
     private void reverseRow(TextView[] views) {
@@ -292,6 +367,9 @@ public final class LauncherSettingsActivity extends Activity {
                         : getString(R.string.wallpaper_theme_default)));
         openOnStartChoice.setText(getString(R.string.open_on_start_state, openOnStartLabel()));
         followThemeChoice.setSelected(!hasOnTvChoices());
+        keyFilterChoice.setText(getString(R.string.key_filter_state, getString(keyFilter ? R.string.on : R.string.off)));
+        powerOnHomeChoice.setText(getString(R.string.power_on_home_state,
+                getString(powerOnHome ? R.string.on : R.string.off)));
     }
 
     private boolean hasOnTvChoices() {

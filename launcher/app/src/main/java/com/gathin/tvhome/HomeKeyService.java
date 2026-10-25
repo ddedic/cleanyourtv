@@ -121,6 +121,12 @@ public class HomeKeyService extends AccessibilityService {
         else service.disarmStandbyExit();
     }
 
+    /** Launcher settings changed key_filter or power_on_home: apply it to the bound service now. */
+    static void applyChoices() {
+        HomeKeyService service = running;
+        if (service != null && service.getSystemService(UserManager.class).isUserUnlocked()) service.loadConfig();
+    }
+
     @Override
     public void onDestroy() {
         if (running == this) running = null;

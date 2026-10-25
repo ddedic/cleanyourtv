@@ -984,9 +984,9 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == LAUNCHER_SETTINGS_REQUEST && resultCode == RESULT_OK
-                && data != null && data.getBooleanExtra(LauncherSettingsActivity.EXTRA_REORDER, false)) {
-            getIntent().putExtra(LauncherSettingsActivity.EXTRA_REORDER, true);
+        String action = data == null ? null : LauncherSettingsActivity.homeAction(data);
+        if (requestCode == LAUNCHER_SETTINGS_REQUEST && resultCode == RESULT_OK && action != null) {
+            getIntent().putExtra(action, true);
             // The old activity must not consume the pending action, or rebuild a second time in onResume.
             settingsRecreationPending = true;
             settingsRevision = settingsRevision();
@@ -995,10 +995,14 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     }
 
     private void startPendingSettingsReorder() {
-        if (settingsRecreationPending || !tilesReady || !hasWindowFocus() || isFinishing()
-                || !getIntent().getBooleanExtra(LauncherSettingsActivity.EXTRA_REORDER, false)) return;
-        getIntent().removeExtra(LauncherSettingsActivity.EXTRA_REORDER);
-        toggleReorder();
+        if (settingsRecreationPending || !tilesReady || !hasWindowFocus() || isFinishing()) return;
+        String action = LauncherSettingsActivity.homeAction(getIntent());
+        if (action == null) return;
+        getIntent().removeExtra(action);
+        if (LauncherSettingsActivity.EXTRA_REORDER.equals(action)) toggleReorder();
+        else if (LauncherSettingsActivity.EXTRA_DOCK_EDIT.equals(action)) {
+            if (dockRow) startDockEdit();
+        } else showInputs();
     }
 
     /** Rebuilds the tiles (and the module cards), then puts focus back where it was. */

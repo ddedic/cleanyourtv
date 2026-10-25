@@ -595,6 +595,7 @@ and a wallpaper.
   `dock_row`; and **Reorder apps**. The launcher's own page has these rows, top to bottom:
   - **Reorder apps**, only with `launcher_settings_button`: OK picks an app up, the arrows move it, Back
     places it, and Back again finishes.
+  - **Edit dock**, only with `launcher_settings_button`: back to Home with the dock picked for editing.
   - **Apps per row** 4, 5, 6 or 7; **Rows below dock** 0 to 3, how many rows of tiles stay visible under the
     dock band; **Dock band opacity** 100%, 70%, 50% or 30%. The last two only do anything while the dock is
     its own row (`dock_row`, on by default).
@@ -607,8 +608,15 @@ and a wallpaper.
     time Home comes up after the TV starts. Once per boot, so Home and Back still reach the launcher.
   - **Follow theme (reset on-TV choices)**, which clears every choice above. Pushing or resetting a theme
     clears them too.
-  - **Choose default home** opens Android's home picker, and **TV system settings** the TV's own settings
-    page.
+  - **Choose default home** opens Android's home picker. **Open original launcher** opens the firmware's
+    own home screen while it is enabled, and says how to turn it back on when the install script disabled it.
+    Some firmware (Philips TPM191E) hands Home back to the original launcher as soon as it is enabled again.
+  - **Home at power-on**, only with a `live_tv_package`: the on-TV switch for `power_on_home`. **Remote button
+    helper**: the on-TV switch for `key_filter`, applied to the bound key services at once. Both override
+    `config.xml` and the theme, and Follow theme leaves them as they are.
+  - **Inputs** goes back to Home with the input list open. **TV system settings** opens the TV's own
+    settings page, **Android settings** Android TV's own one where the firmware answers with another
+    (Philips), **Network settings** the network page and **Apps** the list of installed apps.
 - **Change the default home:** Launcher settings and the optional Default-home tile
   (`show_home_settings_shortcut`) open Android's home picker. Choose the original launcher to stop using
   CleanYourTV as Home, or CleanYourTV to return. The original launcher must be enabled; if the install
