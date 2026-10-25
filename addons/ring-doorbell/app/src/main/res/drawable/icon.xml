@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Own art: a front door on a round tile, the knob in the ring colour. No third-party logo. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp" android:height="108dp" android:viewportWidth="108" android:viewportHeight="108">
+    <path android:fillColor="#FF14181F" android:pathData="M54,4a50,50 0,1 1,0 100a50,50 0,1 1,0 -100z" />
+    <path android:fillColor="#FFFFFFFF" android:pathData="M38,26h32v54h-32z" />
+    <path android:fillColor="#FF14181F" android:pathData="M42,30h24v46h-24z" />
+    <path android:fillColor="#FFFF8A3D" android:pathData="M60,51a3,3 0,1 1,0 6a3,3 0,1 1,0 -6z" />
+    <path android:fillColor="#FFFFFFFF" android:pathData="M30,80h48v4h-48z" />
+</vector>

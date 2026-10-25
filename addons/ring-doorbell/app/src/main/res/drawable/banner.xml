@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Own art: a lit front door at dusk with a ring of light around the bell. No third-party logo. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="320dp" android:height="180dp" android:viewportWidth="320" android:viewportHeight="180">
+    <path android:pathData="M0,0h320v180h-320z">
+        <aapt:attr name="android:fillColor">
+            <gradient android:type="linear" android:startX="0" android:startY="0" android:endX="320" android:endY="180"
+                android:startColor="#FF151B26" android:endColor="#FF07080B" />
+        </aapt:attr>
+    </path>
+    <path android:pathData="M0,0h320v180h-320z">
+        <aapt:attr name="android:fillColor">
+            <gradient android:type="radial" android:centerX="160" android:centerY="96" android:gradientRadius="110"
+                android:startColor="#44FF8A3D" android:endColor="#00FF8A3D" />
+        </aapt:attr>
+    </path>
+    <path android:fillColor="#FFFFFFFF" android:pathData="M132,40h56v104h-56z" />
+    <path android:fillColor="#FF151B26" android:pathData="M138,46h44v92h-44z" />
+    <path android:fillColor="#FFFF8A3D" android:pathData="M174,88a4,4 0,1 1,0 8a4,4 0,1 1,0 -8z" />
+    <path android:fillColor="#FFFFFFFF" android:pathData="M112,144h96v5h-96z" />
+    <path android:fillColor="#00000000" android:strokeColor="#88FF8A3D" android:strokeWidth="2"
+        android:pathData="M214,74a14,14 0,1 1,0 28a14,14 0,1 1,0 -28z" />
+    <path android:fillColor="#FFFF8A3D" android:pathData="M214,82a6,6 0,1 1,0 12a6,6 0,1 1,0 -12z" />
+</vector>

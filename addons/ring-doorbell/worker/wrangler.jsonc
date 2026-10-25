@@ -1,0 +1,10 @@
+{
+  // Ring Partner API front door for the TV add-on: verifies Ring's webhooks and relays them to the TV over one
+  // WebSocket. Secrets (wrangler secret put): RING_HMAC_KEY, TV_TOKEN, LINK_PASSWORD.
+  "name": "ring-doorbell-bridge",
+  "main": "src/index.ts",
+  "compatibility_date": "2025-09-01",
+  "durable_objects": { "bindings": [{ "name": "HUB", "class_name": "Hub" }] },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["Hub"] }],
+  "observability": { "enabled": true }
+}
