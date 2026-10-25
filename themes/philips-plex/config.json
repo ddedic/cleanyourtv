@@ -9,5 +9,6 @@
   "app_library": true,
   "library_grid": true,
   "library_ok_opens": true,
-  "featured_feed": "io.github.ddedic.plexfeed.feed"
+  "featured_feed": "io.github.ddedic.plexfeed.feed",
+  "status_widget": "io.github.ddedic.netatmo.status"
 }
