@@ -1,15 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Own art: a film frame with a play mark on a warm gradient (no third-party logo). -->
+<!-- Own art: a fan of poster cards, the front one playing with a progress bar, over the shelf's position dots.
+     No third-party logo. -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
     android:width="320dp" android:height="180dp"
     android:viewportWidth="320" android:viewportHeight="180">
     <path android:pathData="M0,0h320v180h-320z">
-        <aapt:attr xmlns:aapt="http://schemas.android.com/aapt" name="android:fillColor">
+        <aapt:attr name="android:fillColor">
             <gradient android:type="linear" android:startX="0" android:startY="0" android:endX="320" android:endY="180"
-                android:startColor="#FF2B1E0E" android:endColor="#FF0E0E14" />
+                android:startColor="#FF231C14" android:endColor="#FF0A0A0F" />
         </aapt:attr>
     </path>
-    <path android:fillColor="#00000000" android:strokeColor="#FFE5A00D" android:strokeWidth="6"
-        android:pathData="M110,50h100a10,10 0 0 1 10,10v60a10,10 0 0 1 -10,10h-100a10,10 0 0 1 -10,-10v-60a10,10 0 0 1 10,-10z" />
-    <path android:fillColor="#FFE5A00D" android:pathData="M148,70L178,90L148,110Z" />
+    <!-- Warm glow behind the cards. -->
+    <path android:pathData="M0,0h320v180h-320z">
+        <aapt:attr name="android:fillColor">
+            <gradient android:type="radial" android:centerX="160" android:centerY="84" android:gradientRadius="130"
+                android:startColor="#55F2A93B" android:endColor="#00F2A93B" />
+        </aapt:attr>
+    </path>
+    <!-- Back cards, fanned. -->
+    <group android:pivotX="204" android:pivotY="128" android:rotation="12">
+        <path android:fillColor="#FF2E2822" android:strokeColor="#33FFFFFF" android:strokeWidth="1.5"
+            android:pathData="M150,40h96a8,8 0 0 1 8,8v70a8,8 0 0 1 -8,8h-96a8,8 0 0 1 -8,-8v-70a8,8 0 0 1 8,-8z" />
+    </group>
+    <group android:pivotX="200" android:pivotY="128" android:rotation="5">
+        <path android:fillColor="#FF4A3B2B" android:strokeColor="#40FFFFFF" android:strokeWidth="1.5"
+            android:pathData="M140,38h100a8,8 0 0 1 8,8v74a8,8 0 0 1 -8,8h-100a8,8 0 0 1 -8,-8v-74a8,8 0 0 1 8,-8z" />
+    </group>
+    <!-- Front card. -->
+    <path android:pathData="M94,36h112a10,10 0 0 1 10,10v76a10,10 0 0 1 -10,10h-112a10,10 0 0 1 -10,-10v-76a10,10 0 0 1 10,-10z">
+        <aapt:attr name="android:fillColor">
+            <gradient android:type="linear" android:startX="84" android:startY="36" android:endX="216" android:endY="132"
+                android:startColor="#FFF6BE4F" android:endColor="#FFD9780E" />
+        </aapt:attr>
+    </path>
+    <path android:fillColor="#FFFFFFFF" android:pathData="M141,62L171,80L141,98Z" />
+    <!-- Progress bar: part watched. -->
+    <path android:fillColor="#59FFFFFF" android:pathData="M100,116h100a3,3 0 0 1 0,6h-100a3,3 0 0 1 0,-6z" />
+    <path android:fillColor="#FFFFFFFF" android:pathData="M100,116h58a3,3 0 0 1 0,6h-58a3,3 0 0 1 0,-6z" />
+    <!-- The shelf's position dots. -->
+    <path android:fillColor="#FFFFFFFF" android:pathData="M131,151h14a3,3 0 0 1 0,6h-14a3,3 0 0 1 0,-6z" />
+    <path android:fillColor="#73FFFFFF" android:pathData="M157,154m-3,0a3,3 0 1 0 6,0a3,3 0 1 0 -6,0" />
+    <path android:fillColor="#73FFFFFF" android:pathData="M169,154m-3,0a3,3 0 1 0 6,0a3,3 0 1 0 -6,0" />
+    <path android:fillColor="#73FFFFFF" android:pathData="M181,154m-3,0a3,3 0 1 0 6,0a3,3 0 1 0 -6,0" />
 </vector>
