@@ -64,6 +64,12 @@
     <string name="original_launcher_off">מסך הבית המקורי מושבת. יש להפעיל אותו מחדש דרך ADB (pm enable או סקריפט השחזור) כדי לפתוח אותו מכאן.</string>
     <string name="power_on_home_state">מסך הבית בהדלקה: %1$s</string>
     <string name="power_on_home_hint">כשהטלוויזיה פותחת שידור חי מעצמה בזמן ההדלקה, לעבור למסך הבית במקום. דורש את מסייע מקש הבית.</string>
+    <string name="settings_subtitle">סידור מסך הבית, שינוי המראה שלו וגישה להגדרות של הטלוויזיה.</string>
+    <string name="settings_group_home">מסך הבית</string>
+    <string name="settings_group_look">מראה</string>
+    <string name="settings_group_featured">מדף מומלצים</string>
+    <string name="settings_group_remote">שלט והפעלה</string>
+    <string name="settings_group_tv">טלוויזיה ומערכת</string>
     <string name="featured_state">מדף מומלצים: %1$s</string>
     <string name="featured_hint">המדף המתחלף מעל ה-Dock, שממלאת אפליקציית הפיד שמוגדרת ב-featured_feed.</string>
     <string name="key_filter_state">מסייע כפתורי השלט: %1$s</string>

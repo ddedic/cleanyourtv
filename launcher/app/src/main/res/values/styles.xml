@@ -37,20 +37,45 @@
 
     <style name="SettingsRow">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">52dp</item>
+        <item name="android:layout_height">58dp</item>
+        <item name="android:layout_marginTop">10dp</item>
         <item name="android:gravity">center_vertical</item>
-        <item name="android:paddingStart">18dp</item>
-        <item name="android:paddingEnd">18dp</item>
+        <item name="android:paddingStart">22dp</item>
+        <item name="android:paddingEnd">22dp</item>
         <item name="android:background">@drawable/settings_choice_bg</item>
-        <item name="android:textColor">#FFFFFFFF</item>
+        <item name="android:textColor">@color/settings_row_text</item>
         <item name="android:textSize">18sp</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:ellipsize">end</item>
         <item name="android:focusable">true</item>
         <item name="android:clickable">true</item>
     </style>
     <style name="SettingsColumnChoice" parent="SettingsRow">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_weight">1</item>
+        <item name="android:layout_marginTop">0dp</item>
         <item name="android:layout_marginEnd">10dp</item>
         <item name="android:gravity">center</item>
+    </style>
+    <!-- A group's caption in Launcher settings: small capitals over its rows. -->
+    <style name="SettingsGroup">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">40dp</item>
+        <item name="android:textColor">#FF7FC79A</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:letterSpacing">0.14</item>
+        <item name="android:textAllCaps">true</item>
+    </style>
+    <!-- The explanation under a row. -->
+    <style name="SettingsHint">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:paddingStart">6dp</item>
+        <item name="android:paddingEnd">6dp</item>
+        <item name="android:lineSpacingMultiplier">1.15</item>
+        <item name="android:textColor">#FF8A96A3</item>
+        <item name="android:textSize">14sp</item>
     </style>
 </resources>

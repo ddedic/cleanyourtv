@@ -594,10 +594,10 @@ and a wallpaper.
   Xiaomi's Account & Security with the ADB switch; **Module cards** with `module_cards`; **Edit dock** with
   `dock_row`; and **Reorder apps**. With `settings_menu` the button is one round icon and a click drops
   that menu instead: **All apps** (with `app_library`), **Reorder apps**, **Edit dock**, **Launcher settings**
-  and **TV system settings**. The launcher's own page has these rows, top to bottom:
-  - **Reorder apps**, only with `launcher_settings_button`: OK picks an app up, the arrows move it, Back
-    places it, and Back again finishes.
-  - **Edit dock**, only with `launcher_settings_button`: back to Home with the dock picked for editing.
+  and **TV system settings**. The launcher's own page has two panes, the title on the left and the rows on
+  the right in groups (Home screen, Look, Featured shelf, Remote & power, TV & system), top to bottom:
+  - **Reorder apps**: OK picks an app up, the arrows move it, Back places it, and Back again finishes.
+  - **Edit dock**: back to Home with the dock picked for editing.
   - **Apps per row** 4, 5, 6 or 7; **Rows below dock** 0 to 3, how many rows of tiles stay visible under the
     dock band; **Dock band opacity** 100%, 70%, 50% or 30%. The last two only do anything while the dock is
     its own row (`dock_row`, on by default).

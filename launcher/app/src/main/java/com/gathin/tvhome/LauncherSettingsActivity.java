@@ -61,11 +61,10 @@ public final class LauncherSettingsActivity extends Activity {
         choices = getSharedPreferences(Config.SETTINGS_NAME, MODE_PRIVATE);
         Config config = Config.load(this);
         View reorderChoice = findViewById(R.id.reorderChoice);
-        reorderChoice.setVisibility(config.launcherSettingsButton ? View.VISIBLE : View.GONE);
+        // Grouped under Home screen now, so always offered (they are in the Settings menu too).
         reorderChoice.setOnClickListener(v -> backToHome(EXTRA_REORDER));
         View dockEditChoice = findViewById(R.id.dockEditChoice);
-        dockEditChoice.setVisibility(config.launcherSettingsButton && !config.dockApps.isEmpty()
-                ? View.VISIBLE : View.GONE);
+        dockEditChoice.setVisibility(config.dockApps.isEmpty() ? View.GONE : View.VISIBLE);
         dockEditChoice.setOnClickListener(v -> backToHome(EXTRA_DOCK_EDIT));
         findViewById(R.id.sourcesChoice).setOnClickListener(v -> backToHome(EXTRA_INPUTS));
         columns = config.columns;
@@ -188,6 +187,7 @@ public final class LauncherSettingsActivity extends Activity {
         // Shown while a feed is set, and while it is switched off here (Config then reports no feed).
         if (!config.featuredFeed.isEmpty() || !choices.getBoolean(Config.FEATURED_KEY, true)) {
             featuredChoice.setVisibility(View.VISIBLE);
+            findViewById(R.id.featuredGroup).setVisibility(View.VISIBLE);
             findViewById(R.id.featuredHint).setVisibility(View.VISIBLE);
             featuredChoice.setOnClickListener(v -> {
                 choices.edit().putBoolean(Config.FEATURED_KEY, !choices.getBoolean(Config.FEATURED_KEY, true)).apply();
@@ -217,8 +217,7 @@ public final class LauncherSettingsActivity extends Activity {
             });
         }
         refresh();
-        if (config.launcherSettingsButton) reorderChoice.requestFocus();
-        else columnChoices[Math.max(0, Math.min(columns - 4, 3))].requestFocus();
+        reorderChoice.requestFocus();
     }
 
     private void backToHome(String action) {

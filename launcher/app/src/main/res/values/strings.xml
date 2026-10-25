@@ -72,6 +72,12 @@
     <string name="original_launcher_off">The original launcher is disabled. Turn it back on over ADB (pm enable, or the restore script) to open it from here.</string>
     <string name="power_on_home_state">Home at power-on: %1$s</string>
     <string name="power_on_home_hint">When the TV opens Live TV by itself as it switches on, go to Home instead. Needs the Home key helper.</string>
+    <string name="settings_subtitle">Arrange Home, change how it looks, and reach the TV\'s own settings.</string>
+    <string name="settings_group_home">Home screen</string>
+    <string name="settings_group_look">Look</string>
+    <string name="settings_group_featured">Featured shelf</string>
+    <string name="settings_group_remote">Remote &amp; power</string>
+    <string name="settings_group_tv">TV &amp; system</string>
     <string name="featured_state">Featured shelf: %1$s</string>
     <string name="featured_hint">The rotating shelf above the dock, filled by the feed app set in featured_feed.</string>
     <string name="key_filter_state">Remote button helper: %1$s</string>
