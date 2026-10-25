@@ -5,8 +5,10 @@ import android.content.Context;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -71,6 +73,26 @@ final class Fetcher {
         return null;
     }
 
+    /** Swaps each item's link for its watch.plex.tv page; slugs are kept between fetches, one lookup per new title. */
+    private static void linkToWatchPages(Plex plex, Store store, List<Feed.Item> items) {
+        Map<String, String> known = store.slugs(), kept = new HashMap<>();
+        for (Feed.Item item : items) {
+            if (item.guid.isEmpty()) continue;
+            String slug = known.get(item.guid);
+            if (slug == null) {
+                try {
+                    slug = plex.slug(store.accountToken(), item.guid);
+                } catch (Exception lookupFailed) {
+                    continue;   // keeps the plex:// link, which still opens Plex; tried again next fetch
+                }
+            }
+            kept.put(item.guid, slug);
+            String link = Feed.watchLink(item, slug);
+            if (!link.isEmpty()) item.link = link;
+        }
+        store.setSlugs(kept);
+    }
+
     private static void fetchFrom(Plex plex, Store store, String base) throws Exception {
         String token = store.serverToken();
         int count = store.perSection();
@@ -90,6 +112,7 @@ final class Fetcher {
             episodes.sort((a, b) -> Long.compare(b.addedAt, a.addedAt));
         }
         List<Feed.Item> items = Feed.build(onDeck, movies, episodes, store.serverId(), count);
+        linkToWatchPages(plex, store, items);
 
         File dir = store.artDir();
         List<String> files = new ArrayList<>();

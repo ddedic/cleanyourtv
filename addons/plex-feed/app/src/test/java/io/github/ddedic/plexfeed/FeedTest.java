@@ -105,4 +105,30 @@ public class FeedTest {
         assertEquals("", Feed.remaining(1000, 0));
         assertTrue(Feed.link("", "5").isEmpty());
     }
+
+    @Test public void watchLinksNameTheFilmTheEpisodeOrTheShow() {
+        Feed.Item film = new Feed.Item();
+        film.guid = "plex://movie/5d776d1847dd6e001f6f00a4";
+        assertEquals("https://watch.plex.tv/movie/dune-part-two", Feed.watchLink(film, "dune-part-two"));
+        Feed.Item ep = new Feed.Item();
+        ep.guid = "plex://show/5e1632df2d4d84003e48e54e";
+        ep.season = 4;
+        ep.episode = 1;
+        assertEquals("https://watch.plex.tv/show/tulsa-king/season/4/episode/1", Feed.watchLink(ep, "tulsa-king"));
+        ep.season = 0;
+        assertEquals("https://watch.plex.tv/show/tulsa-king", Feed.watchLink(ep, "tulsa-king"));
+        assertEquals("", Feed.watchLink(ep, ""));
+        assertEquals("", Feed.watchLink(ep, "../x?y"));
+        assertEquals("", Feed.watchLink(new Feed.Item(), "dune"));
+    }
+
+    @Test public void entriesKeepTheFilmsOrTheShowsCatalogueGuidOnly() throws Exception {
+        JSONObject container = new JSONObject("{\"Metadata\":["
+                + "{\"type\":\"episode\",\"ratingKey\":\"9\",\"title\":\"Pilot\",\"guid\":\"plex://episode/e1\","
+                + "\"grandparentGuid\":\"plex://show/s1\"},"
+                + "{\"type\":\"movie\",\"ratingKey\":\"3\",\"title\":\"Home video\",\"guid\":\"local://3\"}]}");
+        List<Plex.Entry> entries = Plex.parseEntries(container);
+        assertEquals("plex://show/s1", entries.get(0).guid);
+        assertEquals("", entries.get(1).guid);
+    }
 }

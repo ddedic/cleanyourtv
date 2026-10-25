@@ -17,7 +17,9 @@ final class Feed {
     static final String BADGE_EPISODE = "New episode";
 
     static final class Item {
-        String key = "", title = "", subtitle = "", summary = "", badge = "", art = "", link = "";
+        String key = "", title = "", subtitle = "", summary = "", badge = "", art = "", link = "", guid = "";
+        /** The episode watch.plex.tv opens; 0 opens the show's page. */
+        int season, episode;
         long addedAt;
     }
 
@@ -72,6 +74,8 @@ final class Feed {
             if (group.size() > 1) {
                 item.badge = BADGE_EPISODES;
                 item.subtitle = group.size() + " new episodes · latest " + seasonEpisode(newest);
+                item.season = 0;
+                item.episode = 0;
             } else {
                 item.badge = BADGE_EPISODE;
             }
@@ -89,6 +93,7 @@ final class Feed {
         item.art = e.art;
         item.addedAt = e.addedAt;
         item.link = link(machineId, e.ratingKey);
+        item.guid = e.guid;
         return item;
     }
 
@@ -101,6 +106,9 @@ final class Feed {
         item.art = e.art;
         item.addedAt = e.addedAt;
         item.link = link(machineId, linkKey);
+        item.guid = e.guid;
+        item.season = e.season;
+        item.episode = e.episode;
         return item;
     }
 
@@ -108,6 +116,18 @@ final class Feed {
     static String link(String machineId, String ratingKey) {
         if (machineId.isEmpty() || ratingKey.isEmpty()) return "";
         return "plex://server://" + machineId + "/com.plexapp.plugins.library/library/metadata/" + ratingKey;
+    }
+
+    /**
+     * The item's page on watch.plex.tv, which the Plex app opens as its details page (tested October 2026); the
+     * plex:// link above it ignores. The page is Plex's catalogue entry, so it has no Play for the server's copy.
+     */
+    static String watchLink(Item item, String slug) {
+        if (slug.isEmpty() || !slug.matches("[a-z0-9-]+")) return "";
+        if (item.guid.startsWith("plex://movie/")) return "https://watch.plex.tv/movie/" + slug;
+        if (!item.guid.startsWith("plex://show/")) return "";
+        String show = "https://watch.plex.tv/show/" + slug;
+        return item.season > 0 && item.episode > 0 ? show + "/season/" + item.season + "/episode/" + item.episode : show;
     }
 
     static String seasonEpisode(Plex.Entry e) {

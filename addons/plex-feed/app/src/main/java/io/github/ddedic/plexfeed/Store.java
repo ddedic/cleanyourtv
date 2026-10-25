@@ -15,7 +15,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -121,8 +124,25 @@ final class Store {
     }
 
     /** Forgets the account and the server and deletes the cache; the section choices stay. */
+    /** Catalogue guid to watch.plex.tv slug, for the titles in the last fetch. */
+    Map<String, String> slugs() {
+        Map<String, String> out = new HashMap<>();
+        try {
+            JSONObject map = new JSONObject(prefs.getString("slugs", "{}"));
+            for (Iterator<String> keys = map.keys(); keys.hasNext(); ) {
+                String key = keys.next();
+                out.put(key, map.optString(key));
+            }
+        } catch (JSONException broken) {
+            out.clear();
+        }
+        return out;
+    }
+
+    void setSlugs(Map<String, String> slugs) { prefs.edit().putString("slugs", new JSONObject(slugs).toString()).apply(); }
+
     void signOut() {
-        prefs.edit().remove("account_token").remove("server_name").remove("server_id").remove("server_token")
+        prefs.edit().remove("account_token").remove("slugs").remove("server_name").remove("server_id").remove("server_token")
                 .remove("server_uri").remove("last_fetch").remove("item_count").remove("last_error").apply();
         File[] art = artDir().listFiles();
         if (art != null) for (File file : art) //noinspection ResultOfMethodCallIgnored

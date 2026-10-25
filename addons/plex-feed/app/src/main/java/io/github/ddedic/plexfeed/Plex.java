@@ -24,6 +24,7 @@ import java.util.List;
  */
 final class Plex {
     static final String PLEX_TV = "https://plex.tv";
+    static final String DISCOVER = "https://discover.provider.plex.tv";
     private static final int TIMEOUT_MS = 8000;
     private static final int PROBE_TIMEOUT_MS = 4000;
     private static final int MAX_ART_BYTES = 3 * 1024 * 1024;
@@ -56,6 +57,8 @@ final class Plex {
     /** One movie or episode from the server, with only the fields the feed shows. */
     static final class Entry {
         String ratingKey = "", type = "", title = "", show = "", showKey = "", summary = "", art = "";
+        /** Plex's catalogue id for the film, or for an episode's show: plex://movie/... or plex://show/... */
+        String guid = "";
         int season, episode, year;
         long addedAt, viewOffset, duration;
     }
@@ -146,6 +149,15 @@ final class Plex {
         } finally {
             connection.disconnect();
         }
+    }
+
+    /** The catalogue slug watch.plex.tv names a film or show by, or "" when Plex has none for that guid. */
+    String slug(String accountToken, String guid) throws IOException, JSONException {
+        String id = guid.substring(guid.lastIndexOf('/') + 1);
+        JSONArray items = container(request("GET", DISCOVER + "/library/metadata/" + URLEncoder.encode(id, "UTF-8"),
+                accountToken, PROBE_TIMEOUT_MS)).optJSONArray("Metadata");
+        JSONObject first = items == null ? null : items.optJSONObject(0);
+        return first == null ? "" : first.optString("slug");
     }
 
     // ---- HTTP ------------------------------------------------------------------------------------
@@ -245,6 +257,8 @@ final class Plex {
             e.addedAt = m.optLong("addedAt");
             e.viewOffset = m.optLong("viewOffset");
             e.duration = m.optLong("duration");
+            String guid = m.optString("episode".equals(type) ? "grandparentGuid" : "guid");
+            if (guid.startsWith("plex://movie/") || guid.startsWith("plex://show/")) e.guid = guid;
             // A wide backdrop first: the show's for an episode, the film's own for a movie; the poster last.
             String art = "episode".equals(type) ? m.optString("grandparentArt") : "";
             if (art.isEmpty()) art = m.optString("art");

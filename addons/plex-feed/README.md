@@ -48,7 +48,7 @@ answering. Only https connections are used.
 
 | Permission | Why |
 |---|---|
-| `INTERNET` | plex.tv for the sign-in and the list of servers, and your chosen Plex server for the feed and its artwork. Nothing else. |
+| `INTERNET` | plex.tv for the sign-in and the list of servers, your chosen Plex server for the feed and its artwork, and Plex's catalogue (`discover.provider.plex.tv`) once per new title for its watch.plex.tv page. Nothing else. |
 | `WRITE_SECURE_SETTINGS` | Optional, granted over ADB only. Writes three settings when you switch the screensaver: `screensaver_enabled`, `screensaver_components` and `screen_off_timeout`, and puts the old values back when you switch it off. Nothing else. |
 
 The account and server tokens stay in the app's private storage. The exported provider serves only titles,
@@ -58,8 +58,10 @@ side too, remove "CleanYourTV Plex Feed" under Authorized Devices on plex.tv.
 
 ## Notes
 
-- OK opens the Plex app. It sends the item's `plex://` link too, but the Plex app for Android TV (tested
-  October 2026) does not act on it, details or play, so Plex opens on its own home screen. When Plex starts
-  cold it may ask "Who's watching?" first.
+- OK opens the item's page in the Plex app: its `watch.plex.tv` link (film, show, or the episode), which the
+  Plex app for Android TV opens as a details page (tested October 2026). That is Plex's catalogue page, so it
+  has no Play for your server's copy; the app ignores `plex://` play and details links. A title Plex's
+  catalogue does not know (a personal video, a library without the Plex agent) opens Plex's home screen.
+  When Plex starts cold it asks "Who's watching?" first and then shows its home screen, not the item.
 - A show you are watching is not repeated as "New episodes".
 - Tested on a Philips 65PUS8545/12 (TPM191E, Android TV 12, STT2.230526.001) with a shared remote server.
