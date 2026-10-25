@@ -133,7 +133,9 @@ final class RingApi {
      * few seconds after the event, so 416/425 are retried a few times for a fresh one. Returns JPEG bytes.
      */
     byte[] snapshot(String token, String deviceId, long at, long linkedAt) throws IOException, JSONException, InterruptedException {
-        JSONObject body = new JSONObject().put("image_options", new JSONObject().put("format", "jpeg"));
+        // Full resolution: Ring's watermark has a fixed pixel size, so it covers the least of a 1920x1080 picture.
+        JSONObject body = new JSONObject().put("image_options", new JSONObject().put("format", "jpeg")
+                .put("resolution", new JSONObject().put("width", 1920).put("height", 1080)));
         if (at > 0) body.put("type", "at_timestamp").put("timestamp", at);
         // Ring only releases media recorded after the account was linked.
         else body.put("type", "latest_in_range").put("start_timestamp",

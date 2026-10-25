@@ -36,7 +36,8 @@ public final class PreviewActivity extends Activity {
         super.onCreate(state);
         store = new Store(this);
         FrameLayout root = new FrameLayout(this);
-        root.setBackgroundColor(0xCC000000);
+        // Dark enough that Home's text and tiles do not read through around the card (no blur on Android 11).
+        root.setBackgroundColor(0xEB000000);
         root.setOnClickListener(v -> finish());
 
         LinearLayout card = new LinearLayout(this);
@@ -148,7 +149,7 @@ public final class PreviewActivity extends Activity {
         Bitmap bitmap = BitmapFactory.decodeFile(file.getPath());
         if (bitmap == null) return;
         picture.setImageBitmap(bitmap);
-        Ui.caption(this, frame, Ui.badge(this, getString(R.string.badge_newest), Ui.MOTION), Ui.when(this, file.lastModified()));
+        Ui.caption(this, frame, Ui.badge(this, getString(R.string.badge_newest), Ui.MOTION), Ui.clock(this, file.lastModified()));
         caption.setText(getString(R.string.hint_newest));
     }
 

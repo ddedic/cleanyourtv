@@ -221,7 +221,7 @@ public final class MainActivity extends Activity {
             boolean has = latest.isFile();
             picture.setImageBitmap(has ? BitmapFactory.decodeFile(latest.getPath()) : null);
             Ui.caption(this, frame, has ? Ui.badge(this, getString(R.string.badge_newest), Ui.MOTION) : null,
-                    has ? getString(R.string.picture_from, Ui.when(this, latest.lastModified())) : null);
+                    has ? getString(R.string.picture_from, Ui.clock(this, latest.lastModified())) : null);
             Ui.empty(frame, getString(checking ? R.string.checking : R.string.no_picture_yet));
             subtitle.setText(has ? getString(checking ? R.string.checking : R.string.hint_newest) : "");
             return;
