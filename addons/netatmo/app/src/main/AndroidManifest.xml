@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-feature android:name="android.software.leanback" android:required="false" />
+    <uses-feature android:name="android.hardware.touchscreen" android:required="false" />
+
+    <!-- The only permission: api.netatmo.com, for the token, the rooms' temperatures and the two commands. -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
+        android:allowBackup="false"
+        android:banner="@drawable/banner"
+        android:icon="@drawable/icon"
+        android:label="@string/app_name"
+        android:supportsRtl="false"
+        android:usesCleartextTraffic="false"
+        android:theme="@android:style/Theme.Material.NoActionBar.Fullscreen">
+
+        <!-- The LEANBACK_LAUNCHER entry also makes this package, and so its provider, visible to the launcher. -->
+        <activity
+            android:name=".PanelActivity"
+            android:exported="true"
+            android:excludeFromRecents="true"
+            android:screenOrientation="landscape">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- status_widget (docs/specs/status.md): the main room's temperature as text; no tokens leave the app. -->
+        <provider
+            android:name=".StatusProvider"
+            android:authorities="io.github.ddedic.netatmo.status"
+            android:exported="true" />
+    </application>
+</manifest>

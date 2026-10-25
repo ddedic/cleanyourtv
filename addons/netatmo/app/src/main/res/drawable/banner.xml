@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Own art: a thermometer and the room temperature over a warm glow. No third-party logo. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="320dp" android:height="180dp"
+    android:viewportWidth="320" android:viewportHeight="180">
+    <path android:pathData="M0,0h320v180h-320z">
+        <aapt:attr name="android:fillColor">
+            <gradient android:type="linear" android:startX="0" android:startY="0" android:endX="320" android:endY="180"
+                android:startColor="#FF241812" android:endColor="#FF0B0C11" />
+        </aapt:attr>
+    </path>
+    <path android:pathData="M0,0h320v180h-320z">
+        <aapt:attr name="android:fillColor">
+            <gradient android:type="radial" android:centerX="120" android:centerY="96" android:gradientRadius="120"
+                android:startColor="#55FF8A3D" android:endColor="#00FF8A3D" />
+        </aapt:attr>
+    </path>
+    <path android:fillColor="#FFFF8A3D"
+        android:pathData="M126,96V54c0,-3.3 -2.7,-6 -6,-6s-6,2.7 -6,6v42c-3.6,2.2 -6,6.1 -6,10.6c0,6.8 5.4,12.4 12,12.4s12,-5.6 12,-12.4C132,102.1 129.6,98.2 126,96z" />
+    <path android:fillColor="#FFFFFFFF" android:pathData="M120,100a6,6 0,1 1,0 12a6,6 0,1 1,0 -12z" />
+    <path android:fillColor="#99FFFFFF" android:pathData="M150,70h60v6h-60z M150,88h90v10h-90z M150,108h44v6h-44z" />
+</vector>

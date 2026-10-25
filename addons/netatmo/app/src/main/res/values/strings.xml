@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Heating</string>
+    <string name="title">Heating</string>
+    <string name="setup">Not set up yet. Push the Netatmo app\'s credentials once over ADB, as the add-on\'s README describes, then open this again.</string>
+    <string name="updating">Updating…</string>
+    <string name="failed">Last update failed: %1$s</string>
+    <string name="heating_now">Heating</string>
+    <string name="not_heating">Not heating</string>
+    <string name="updated">Updated %1$s</string>
+    <string name="just_now">just now</string>
+    <string name="on_home">On Home</string>
+    <string name="target">Target %1$s</string>
+    <string name="rooms">Rooms</string>
+    <string name="mode">Mode</string>
+    <string name="room_manual">Manual</string>
+    <string name="room_off">Off</string>
+    <string name="mode_schedule">Schedule</string>
+    <string name="mode_schedule_sub">Follow the weekly plan</string>
+    <string name="mode_away">Away</string>
+    <string name="mode_away_sub">Eco temperature while nobody is home</string>
+    <string name="mode_frost">Frost guard</string>
+    <string name="mode_frost_sub">Only keep the home from freezing</string>
+    <string name="back_to_schedule">Back to schedule</string>
+    <string name="hint">▲ ▼ warmer or colder</string>
+    <string name="hint_rooms">▲ ▼ warmer or colder · OK on a room shows it here · hold OK to put it on Home</string>
+</resources>
