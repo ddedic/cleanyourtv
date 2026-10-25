@@ -359,7 +359,7 @@
          example the Plex feed add-on's "io.github.ddedic.plexfeed.feed". Up from the dock focuses the shelf; Left and
          Right step through it, OK opens the item. The launcher never goes online for it. Empty (the default) is
          off; a theme can set "featured_feed". Launcher settings can switch a set feed off on the TV. -->
-    <string name="featured_feed" translatable="false"></string>
+    <string name="featured_feed" translatable="false">io.github.ddedic.plexfeed.feed</string>
     <!-- Seconds each featured item stays, 4 to 60. A theme can set "featured_seconds". -->
     <integer name="featured_seconds">8</integer>
 
