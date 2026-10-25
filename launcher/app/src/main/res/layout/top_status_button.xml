@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The status_widget pill: a labelled pill like Wi-Fi, its text and icon set by StatusPill. -->
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/TopButton"
+    android:singleLine="true"
+    android:nextFocusDown="@+id/grid" />

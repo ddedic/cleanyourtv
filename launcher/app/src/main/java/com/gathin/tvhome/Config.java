@@ -106,6 +106,8 @@ final class Config {
     final int featuredSeconds;
     /** featured_tint: the featured shelf takes each picture's colour for its gradient and label. */
     final boolean featuredTint;
+    /** status_widget: the content provider authority of the top-bar status pill; empty when off. */
+    final String statusWidget;
     /** Name after the greeting ("Good morning, Mr. Trịnh"); empty for the greeting alone. */
     final String greetingName;
     final boolean moduleCards;
@@ -276,7 +278,7 @@ final class Config {
                    List<RaceWeekend.Race> raceCalendar, boolean cinematicHome, boolean ambientGlow, boolean appGlow, boolean fadeRows, int homeIdleClockMinutes,
                    boolean keyFilter, boolean dockGlass, String glowStyle, boolean wallpaperCaptions,
                    boolean handleViewInputs, boolean tileMenu, boolean dockEvenPadding, boolean dockBand, boolean cinematicDots, boolean cinematicWhiteFocus, boolean wifiStatusColor, int cinematicScrim, int cinematicArt,
-                   Map<String, Set<String>> wallpaperMoods, boolean gamepadPassthrough, boolean consumeVolumeKeys, boolean powerOnHome, boolean wifiStatusWarnings, List<String> topBarApps, boolean showGreeting, boolean headerWhite, boolean clockWallpaper, int clockWallpaperDim, boolean clockGlow, String glassStyle, boolean singleRow, boolean dockBandAll, boolean lunarDate, int lunarUtcOffset, boolean dateBelowClock, boolean settingsMenu, boolean libraryGrid, String featuredFeed, int featuredSeconds, boolean featuredTint) {
+                   Map<String, Set<String>> wallpaperMoods, boolean gamepadPassthrough, boolean consumeVolumeKeys, boolean powerOnHome, boolean wifiStatusWarnings, List<String> topBarApps, boolean showGreeting, boolean headerWhite, boolean clockWallpaper, int clockWallpaperDim, boolean clockGlow, String glassStyle, boolean singleRow, boolean dockBandAll, boolean lunarDate, int lunarUtcOffset, boolean dateBelowClock, boolean settingsMenu, boolean libraryGrid, String featuredFeed, int featuredSeconds, boolean featuredTint, String statusWidget) {
         this.handleViewInputs = handleViewInputs;
         this.tileMenu = tileMenu;
         this.inputKeycodes = inputKeycodes;
@@ -312,6 +314,7 @@ final class Config {
         this.featuredFeed = featuredFeed;
         this.featuredSeconds = featuredSeconds;
         this.featuredTint = featuredTint;
+        this.statusWidget = statusWidget;
         this.greetingName = greetingName;
         this.moduleCards = moduleCards;
         this.reducedMotion = reducedMotion;
@@ -492,6 +495,7 @@ final class Config {
         String featuredFeed = res.getString(R.string.featured_feed).trim();
         int featuredSeconds = res.getInteger(R.integer.featured_seconds);
         boolean featuredTint = res.getBoolean(R.bool.featured_tint);
+        String statusWidget = res.getString(R.string.status_widget).trim();
         List<String> topBarApps = new ArrayList<>(Arrays.asList(res.getStringArray(R.array.top_bar_apps)));
         boolean showGreeting = res.getBoolean(R.bool.show_greeting);
         boolean headerWhite = res.getBoolean(R.bool.header_white);
@@ -596,6 +600,7 @@ final class Config {
             featuredFeed = string(json, "featured_feed", featuredFeed).trim();
             featuredSeconds = integer(json, "featured_seconds", featuredSeconds, 4, 60);
             featuredTint = bool(json, "featured_tint", featuredTint);
+            statusWidget = string(json, "status_widget", statusWidget).trim();
             topBarApps = stringList(json, "top_bar_apps", topBarApps);
             showGreeting = bool(json, "show_greeting", showGreeting);
             headerWhite = bool(json, "header_white", headerWhite);
@@ -671,7 +676,7 @@ final class Config {
                 dockBand, cinematicDots, cinematicWhiteFocus, wifiStatusColor, cinematicScrim, cinematicArt, wallpaperMoods, gamepadPassthrough,
                 consumeVolumeKeys, powerOnHome, wifiStatusWarnings, topBarApps, showGreeting, headerWhite, clockWallpaper,
                 Math.max(0, Math.min(90, clockWallpaperDim)), clockGlow, glassStyle, singleRow && dockRow, dockBandAll, lunar, lunarOffset,
-                dateBelowClock, settingsMenu, libraryGrid, featuredFeed, featuredSeconds, featuredTint);
+                dateBelowClock, settingsMenu, libraryGrid, featuredFeed, featuredSeconds, featuredTint, statusWidget);
     }
 
     /**

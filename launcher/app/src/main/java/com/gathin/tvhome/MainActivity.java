@@ -747,6 +747,14 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         });
         btnLibraryTop.setVisibility(cfg.libraryButton && cfg.appLibrary ? View.VISIBLE : View.GONE);
         addTopBarApps(cfg.topBarApps);
+        if (!cfg.statusWidget.isEmpty()) {
+            ViewGroup bar = findViewById(R.id.topButtons);
+            TextView pill = (TextView) getLayoutInflater().inflate(R.layout.top_status_button, bar, false);
+            pill.setId(View.generateViewId());   // pillKeys finds the bar's ends by id
+            bar.addView(pill, bar.indexOfChild(btnWifi));
+            topAppButtons.add(pill);
+            statusPill = new StatusPill(this, pill, cfg.statusWidget);
+        }
         iconOnlyButtons = cfg.iconOnlyButtons;
         topMenu = cfg.topMenu;
         wifiIconOnly = iconOnlyButtons && cfg.wifiLabelWidth <= 0;
@@ -970,6 +978,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         }
         restartIdleClock();
         if (featured != null) featured.start();
+        if (statusPill != null) statusPill.start();
         promptsPaused = false;
         if (grid.getAdapter() == null) grid.setAdapter(adapter);   // dropped by onTrimMemory
         switch (tileRefresh.onResume(packagesChangedSinceRebuild())) {
@@ -1174,6 +1183,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         super.onPause();
         root.removeCallbacks(showIdleClock);
         if (featured != null) featured.stop();
+        if (statusPill != null) statusPill.stop();
         endReorder();   // Home or another app while reordering keeps the order so far
         wallpaperPlayer.stop();
         stopAmbientAnimation();
@@ -2363,6 +2373,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
 
     /** top_bar_apps buttons, in bar order. */
     private final List<View> topAppButtons = new ArrayList<>();
+    private StatusPill statusPill;
 
     /**
      * Puts each top_bar_apps app in the top bar as a round pill with the app's own logo, left of the network pill.
