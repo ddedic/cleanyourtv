@@ -59,11 +59,14 @@ final class Status {
         return first;
     }
 
-    /** "21.4° → 22°": the room now, then its target; the target alone is left out when it is unknown. */
+    /** The room now, "21.4°": the pill's text. Its target goes in the pill's badge, see {@link #target}. */
     static String pill(Room room) {
-        if (room == null || Double.isNaN(room.measured)) return "";
-        String now = degrees(room.measured);
-        return Double.isNaN(room.target) ? now : now + " → " + degrees(room.target);
+        return room == null || Double.isNaN(room.measured) ? "" : degrees(room.measured);
+    }
+
+    /** The room's target, "22°", for the pill's corner tag; empty when Netatmo gives none. */
+    static String target(Room room) {
+        return room == null || Double.isNaN(room.target) ? "" : degrees(room.target);
     }
 
     /** 21.4°, 22°: one decimal, none when it is whole. */

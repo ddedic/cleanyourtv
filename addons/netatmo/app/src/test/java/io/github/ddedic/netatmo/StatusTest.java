@@ -34,10 +34,13 @@ public class StatusTest {
         assertEquals("Living room", status.main("gone").name);
     }
 
-    @Test public void thePillShowsNowThenTarget() {
+    @Test public void thePillShowsNowAndItsBadgeTheTarget() {
         Status.Room room = new Status.Room("1", "Living room", 21.44, 22, "manual", false);
-        assertEquals("21.4° → 22°", Status.pill(room));
-        assertEquals("19°", Status.pill(new Status.Room("2", "Bed", 19, Double.NaN, "schedule", false)));
+        assertEquals("21.4°", Status.pill(room));
+        assertEquals("22°", Status.target(room));
+        Status.Room noTarget = new Status.Room("2", "Bed", 19, Double.NaN, "schedule", false);
+        assertEquals("19°", Status.pill(noTarget));
+        assertEquals("", Status.target(noTarget));
         assertEquals("", Status.pill(null));
         assertEquals("", Status.pill(new Status.Room("3", "X", Double.NaN, 20, "schedule", false)));
     }
@@ -67,7 +70,8 @@ public class StatusTest {
         Status status = Netatmo.parseStatus(new JSONObject(HOMESTATUS), Netatmo.parseHome(new JSONObject(HOMESDATA)), 42);
         Status back = Status.fromJson(status.toJson());
         assertEquals(42, back.fetchedAt);
-        assertEquals("21.4° → 22°", Status.pill(back.main("")));
+        assertEquals("21.4°", Status.pill(back.main("")));
+        assertEquals("22°", Status.target(back.main("")));
         assertNull(Status.fromJson("{broken"));
     }
 

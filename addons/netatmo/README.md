@@ -2,8 +2,8 @@
 
 Your Netatmo thermostat or radiator valves on the TV. The add-on reads each room's temperature and target from
 the Netatmo Energy API and serves the main room to the launcher's status pill (`status_widget`, contract in
-[`docs/specs/status.md`](../../docs/specs/status.md)): `21.4° → 22°` in the top bar, with a warm flame while
-the boiler runs. OK on the pill opens a full-screen heating page over a calm ember (heating) or ice-blue (idle)
+[`docs/specs/status.md`](../../docs/specs/status.md)): `21.4°` in the top bar with the target, `22°`, in a
+small tag on its corner, and a warm flame while the boiler runs. OK on the pill opens a full-screen heating page over a calm ember (heating) or ice-blue (idle)
 background:
 
 - A big dial for one room: the temperature now in large type, the target as a glowing arc and a dot where the

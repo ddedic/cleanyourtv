@@ -15,7 +15,7 @@ import android.os.Bundle;
 public final class StatusProvider extends ContentProvider {
     static final String AUTHORITY = "io.github.ddedic.netatmo.status";
     static final Uri STATUS = Uri.parse("content://" + AUTHORITY + "/status");
-    private static final String[] COLUMNS = {"text", "icon", "description", "intent"};
+    private static final String[] COLUMNS = {"text", "icon", "badge", "description", "intent"};
 
     @Override public boolean onCreate() { return true; }
 
@@ -34,7 +34,7 @@ public final class StatusProvider extends ContentProvider {
             String description = room.name + " " + Status.degrees(room.measured)
                     + (heating ? ", heating to " : ", set to ") + Status.degrees(room.target);
             String intent = new Intent(getContext(), PanelActivity.class).toUri(Intent.URI_INTENT_SCHEME);
-            cursor.addRow(new Object[]{text, heating ? "flame" : "thermostat", description, intent});
+            cursor.addRow(new Object[]{text, heating ? "flame" : "thermostat", Status.target(room), description, intent});
         }
         cursor.setNotificationUri(getContext().getContentResolver(), STATUS);
         return cursor;
