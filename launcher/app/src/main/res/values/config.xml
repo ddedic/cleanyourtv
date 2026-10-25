@@ -237,10 +237,10 @@
          Reorder apps, Edit dock, Launcher settings and TV system settings. Turn reorder_button, library_button and
          launcher_settings_button off with it, so the top bar is Inputs, Wi-Fi and this icon. Off by default; a
          theme can set "settings_menu": true. Ignored with top_menu. -->
-    <bool name="settings_menu">false</bool>
+    <bool name="settings_menu">true</bool>
     <!-- A direct Launcher settings action instead of TV Settings in the header (or top_menu).
          Off by default; a theme can set "launcher_settings_button": true. -->
-    <bool name="launcher_settings_button">true</bool>
+    <bool name="launcher_settings_button">false</bool>
     <!-- The dock band as light frosted glass, like the Inputs, Wi-Fi and Settings pills, so a sky or wallpaper shows
          through it. false (the default) keeps the solid near-black band, or the cinematic shelf's dark glass. Can
          also be set with "dock_glass": true in a theme's config.json. -->
@@ -260,7 +260,7 @@
     <bool name="dock_even_padding">false</bool>
     <!-- A reorder button (two arrows) in the top bar. Off by default: reordering is also in the Settings
          button's long-press menu, so it needs no extra button on screen. -->
-    <bool name="reorder_button">true</bool>
+    <bool name="reorder_button">false</bool>
     <!-- Wi-Fi and Settings as round icon-only buttons (the network name moves to the talkback description);
          Inputs keeps its label. -->
     <bool name="icon_only_buttons">false</bool>
@@ -275,7 +275,7 @@
          of white for both. Can also be set with "wifi_status_warnings": true in a theme's config.json. -->
     <bool name="wifi_status_warnings">false</bool>
     <!-- The app library as a round button in the top bar, beside Settings (app_library must be on too). -->
-    <bool name="library_button">true</bool>
+    <bool name="library_button">false</bool>
     <!-- The App library pill after the last Home row. false hides it while library_button is on, so the top-bar
          button stays the way in, and Down from the last row stays put as with app_library off. Can also be set
          with "show_library_pill": false in a theme's config.json. -->
@@ -347,12 +347,12 @@
     <!-- OK opens every app in the library, not only the apps on Home: for a library that holds the apps a theme
          keeps off Home with hidden_apps. Hold OK still offers Add to Home. app_library_selection wins when both are
          on. Off by default; a theme can set "library_ok_opens": true (also needs app_library). -->
-    <bool name="library_ok_opens">false</bool>
+    <bool name="library_ok_opens">true</bool>
     <!-- The app library as a full-screen grid that scrolls down: app banners like the Home tiles, A to Z, a check
          on apps that are on Home, and no entries whose only name is a package or class name (firmware internals).
          Hold OK adds to or removes from Home, or Add to dock for an app on Home. Off by default (the one-row
          shelf); a theme can set "library_grid": true. Pair it with library_ok_opens. -->
-    <bool name="library_grid">false</bool>
+    <bool name="library_grid">true</bool>
 
     <!-- Apps pre-seeded into the App library's "added" set at startup (config.xml library_apps, or a theme's
          config.json). They show on Home as if the owner had added them in the App library UI, and stay
