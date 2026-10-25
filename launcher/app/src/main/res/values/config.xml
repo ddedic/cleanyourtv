@@ -353,6 +353,15 @@
          Hold OK adds to or removes from Home, or Add to dock for an app on Home. Off by default (the one-row
          shelf); a theme can set "library_grid": true. Pair it with library_ok_opens. -->
     <bool name="library_grid">true</bool>
+    <!-- A rotating featured shelf above the dock, Netflix style: each item's backdrop over the screen with its
+         title, a line under it and a short summary, the next one every featured_seconds while Home is on screen.
+         The items come from another app's content provider (docs/specs/feed.md), named here by its authority, for
+         example the Plex feed add-on's "io.github.ddedic.plexfeed.feed". Up from the dock focuses the shelf; Left and
+         Right step through it, OK opens the item. The launcher never goes online for it. Empty (the default) is
+         off; a theme can set "featured_feed". Launcher settings can switch a set feed off on the TV. -->
+    <string name="featured_feed" translatable="false"></string>
+    <!-- Seconds each featured item stays, 4 to 60. A theme can set "featured_seconds". -->
+    <integer name="featured_seconds">8</integer>
 
     <!-- Apps pre-seeded into the App library's "added" set at startup (config.xml library_apps, or a theme's
          config.json). They show on Home as if the owner had added them in the App library UI, and stay

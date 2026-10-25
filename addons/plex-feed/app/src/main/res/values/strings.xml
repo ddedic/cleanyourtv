@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Plex feed</string>
+    <string name="intro">Show what is new on your Plex server on the TV\'s home screen: continue watching, recently added movies and new episodes. Sign in once with a code.</string>
+    <string name="sign_in">Sign in with a code</string>
+    <string name="enter_code">On your phone or computer, open plex.tv/link and enter this code:</string>
+    <string name="cancel">Cancel</string>
+    <string name="no_plex_tv">Could not reach plex.tv (%1$s)</string>
+    <string name="code_expired">The code expired. Sign in again for a new one.</string>
+    <string name="choose_server">Choose the server to show</string>
+    <string name="loading">Loading your servers…</string>
+    <string name="no_servers">No servers on this Plex account.</string>
+    <string name="shared_server">%1$s (shared with you)</string>
+    <string name="connecting">Connecting to %1$s…</string>
+    <string name="unreachable">%1$s did not answer on any of its addresses.</string>
+    <string name="server">Server: %1$s</string>
+    <string name="show_continue">Continue watching: %1$s</string>
+    <string name="show_movies">Recently added movies: %1$s</string>
+    <string name="show_episodes">New episodes: %1$s</string>
+    <string name="per_section">Items per section: %1$d</string>
+    <string name="refresh">Refresh now</string>
+    <string name="change_server">Change server</string>
+    <string name="sign_out">Sign out</string>
+    <string name="launcher_hint">In the launcher, set featured_feed to io.github.ddedic.plexfeed.feed. Home refreshes the feed when it is older than 15 minutes.</string>
+    <string name="updating">Updating…</string>
+    <string name="failed">Last update failed: %1$s</string>
+    <string name="updated">Updated %1$s · %2$d items</string>
+    <string name="on">On</string>
+    <string name="off">Off</string>
+</resources>

@@ -52,3 +52,5 @@ fits the rules; keys from before the rule sit on its wanted list until a screens
 | `power_on_home` | <img src="switches/power_on_home.jpg" width="320" alt="power_on_home on a TV"> |
 | `settings_menu` | <img src="switches/settings_menu.jpg" width="320" alt="settings_menu on a TV"> |
 | `library_grid` | <img src="switches/library_grid.jpg" width="320" alt="library_grid on a TV"> |
+| `featured_feed` | <img src="switches/featured_feed.jpg" width="320" alt="featured_feed on a TV"> |
+| `featured_seconds` | <img src="switches/featured_seconds.jpg" width="320" alt="featured_seconds on a TV"> |

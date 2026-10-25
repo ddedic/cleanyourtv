@@ -613,6 +613,8 @@ and a wallpaper.
   - **Choose default home** opens Android's home picker. **Open original launcher** opens the firmware's
     own home screen while it is enabled, and says how to turn it back on when the install script disabled it.
     Some firmware (Philips TPM191E) hands Home back to the original launcher as soon as it is enabled again.
+  - **Featured shelf**, only while `featured_feed` names a feed: switches the rotating shelf above the dock off
+    or on again on this TV.
   - **Home at power-on**, only with a `live_tv_package`: the on-TV switch for `power_on_home`. **Remote button
     helper**: the on-TV switch for `key_filter`, applied to the bound key services at once. Both override
     `config.xml` and the theme, and Follow theme leaves them as they are.

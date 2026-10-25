@@ -46,6 +46,8 @@ final class Config {
     /** On-TV overrides of key_filter and power_on_home, set in Launcher settings. */
     static final String KEY_FILTER_KEY = "key_filter";
     static final String POWER_ON_HOME_KEY = "power_on_home";
+    /** On-TV switch for the featured shelf; it only turns off a featured_feed that config.xml or the theme set. */
+    static final String FEATURED_KEY = "featured";
     /**
      * Counts the changes made in Launcher settings. Home remembers the count it was built with and rebuilds on
      * resume when it differs, however the settings were left (see MainActivity#onResume).
@@ -97,6 +99,10 @@ final class Config {
     final boolean settingsMenu;
     /** The app library as a full-screen grid of banners, A to Z (library_grid). */
     final boolean libraryGrid;
+    /** featured_feed: the content provider authority of the featured shelf's feed; empty when off. */
+    final String featuredFeed;
+    /** featured_seconds: how long each featured item stays before the next (4 to 60). */
+    final int featuredSeconds;
     /** Name after the greeting ("Good morning, Mr. Trịnh"); empty for the greeting alone. */
     final String greetingName;
     final boolean moduleCards;
@@ -267,7 +273,7 @@ final class Config {
                    List<RaceWeekend.Race> raceCalendar, boolean cinematicHome, boolean ambientGlow, boolean appGlow, boolean fadeRows, int homeIdleClockMinutes,
                    boolean keyFilter, boolean dockGlass, String glowStyle, boolean wallpaperCaptions,
                    boolean handleViewInputs, boolean tileMenu, boolean dockEvenPadding, boolean dockBand, boolean cinematicDots, boolean cinematicWhiteFocus, boolean wifiStatusColor, int cinematicScrim, int cinematicArt,
-                   Map<String, Set<String>> wallpaperMoods, boolean gamepadPassthrough, boolean consumeVolumeKeys, boolean powerOnHome, boolean wifiStatusWarnings, List<String> topBarApps, boolean showGreeting, boolean headerWhite, boolean clockWallpaper, int clockWallpaperDim, boolean clockGlow, String glassStyle, boolean singleRow, boolean dockBandAll, boolean lunarDate, int lunarUtcOffset, boolean dateBelowClock, boolean settingsMenu, boolean libraryGrid) {
+                   Map<String, Set<String>> wallpaperMoods, boolean gamepadPassthrough, boolean consumeVolumeKeys, boolean powerOnHome, boolean wifiStatusWarnings, List<String> topBarApps, boolean showGreeting, boolean headerWhite, boolean clockWallpaper, int clockWallpaperDim, boolean clockGlow, String glassStyle, boolean singleRow, boolean dockBandAll, boolean lunarDate, int lunarUtcOffset, boolean dateBelowClock, boolean settingsMenu, boolean libraryGrid, String featuredFeed, int featuredSeconds) {
         this.handleViewInputs = handleViewInputs;
         this.tileMenu = tileMenu;
         this.inputKeycodes = inputKeycodes;
@@ -300,6 +306,8 @@ final class Config {
         this.dateBelowClock = dateBelowClock;
         this.settingsMenu = settingsMenu;
         this.libraryGrid = libraryGrid;
+        this.featuredFeed = featuredFeed;
+        this.featuredSeconds = featuredSeconds;
         this.greetingName = greetingName;
         this.moduleCards = moduleCards;
         this.reducedMotion = reducedMotion;
@@ -477,6 +485,8 @@ final class Config {
         boolean dateBelowClock = res.getBoolean(R.bool.date_below_clock);
         boolean settingsMenu = res.getBoolean(R.bool.settings_menu);
         boolean libraryGrid = res.getBoolean(R.bool.library_grid);
+        String featuredFeed = res.getString(R.string.featured_feed).trim();
+        int featuredSeconds = res.getInteger(R.integer.featured_seconds);
         List<String> topBarApps = new ArrayList<>(Arrays.asList(res.getStringArray(R.array.top_bar_apps)));
         boolean showGreeting = res.getBoolean(R.bool.show_greeting);
         boolean headerWhite = res.getBoolean(R.bool.header_white);
@@ -578,6 +588,8 @@ final class Config {
             dateBelowClock = bool(json, "date_below_clock", dateBelowClock);
             settingsMenu = bool(json, "settings_menu", settingsMenu);
             libraryGrid = bool(json, "library_grid", libraryGrid);
+            featuredFeed = string(json, "featured_feed", featuredFeed).trim();
+            featuredSeconds = integer(json, "featured_seconds", featuredSeconds, 4, 60);
             topBarApps = stringList(json, "top_bar_apps", topBarApps);
             showGreeting = bool(json, "show_greeting", showGreeting);
             headerWhite = bool(json, "header_white", headerWhite);
@@ -604,6 +616,8 @@ final class Config {
         advancedEffects = choices.getBoolean("advanced_effects", advancedEffects);
         keyFilter = choices.getBoolean(KEY_FILTER_KEY, keyFilter);
         powerOnHome = choices.getBoolean(POWER_ON_HOME_KEY, powerOnHome);
+        if (!choices.getBoolean(FEATURED_KEY, true)) featuredFeed = "";
+        featuredSeconds = Math.max(4, Math.min(60, featuredSeconds));
         File wallpaper = dir != null ? new File(dir, WALLPAPER_NAME) : null;
         if (wallpaper != null && !(wallpaper.isFile() && wallpaper.length() > 0)) wallpaper = null;
         // A theme can also switch the wallpaper off while the file is still there.
@@ -650,7 +664,7 @@ final class Config {
                 dockBand, cinematicDots, cinematicWhiteFocus, wifiStatusColor, cinematicScrim, cinematicArt, wallpaperMoods, gamepadPassthrough,
                 consumeVolumeKeys, powerOnHome, wifiStatusWarnings, topBarApps, showGreeting, headerWhite, clockWallpaper,
                 Math.max(0, Math.min(90, clockWallpaperDim)), clockGlow, glassStyle, singleRow && dockRow, dockBandAll, lunar, lunarOffset,
-                dateBelowClock, settingsMenu, libraryGrid);
+                dateBelowClock, settingsMenu, libraryGrid, featuredFeed, featuredSeconds);
     }
 
     /**

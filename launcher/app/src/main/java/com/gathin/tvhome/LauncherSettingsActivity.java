@@ -36,6 +36,7 @@ public final class LauncherSettingsActivity extends Activity {
     private SharedPreferences choices;
     private TextView keyFilterChoice;
     private TextView powerOnHomeChoice;
+    private TextView featuredChoice;
     private boolean keyFilter;
     private boolean powerOnHome;
     private final TextView[] columnChoices = new TextView[4];
@@ -183,6 +184,17 @@ public final class LauncherSettingsActivity extends Activity {
             if (stock == null) Toast.makeText(this, R.string.original_launcher_off, Toast.LENGTH_LONG).show();
             else open(new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME).setComponent(stock));
         });
+        featuredChoice = findViewById(R.id.featuredChoice);
+        // Shown while a feed is set, and while it is switched off here (Config then reports no feed).
+        if (!config.featuredFeed.isEmpty() || !choices.getBoolean(Config.FEATURED_KEY, true)) {
+            featuredChoice.setVisibility(View.VISIBLE);
+            findViewById(R.id.featuredHint).setVisibility(View.VISIBLE);
+            featuredChoice.setOnClickListener(v -> {
+                choices.edit().putBoolean(Config.FEATURED_KEY, !choices.getBoolean(Config.FEATURED_KEY, true)).apply();
+                changed();
+                refresh();
+            });
+        }
         keyFilter = config.keyFilter;
         powerOnHome = config.powerOnHome;
         keyFilterChoice = findViewById(R.id.keyFilterChoice);
@@ -368,6 +380,8 @@ public final class LauncherSettingsActivity extends Activity {
         openOnStartChoice.setText(getString(R.string.open_on_start_state, openOnStartLabel()));
         followThemeChoice.setSelected(!hasOnTvChoices());
         keyFilterChoice.setText(getString(R.string.key_filter_state, getString(keyFilter ? R.string.on : R.string.off)));
+        featuredChoice.setText(getString(R.string.featured_state,
+                getString(choices.getBoolean(Config.FEATURED_KEY, true) ? R.string.on : R.string.off)));
         powerOnHomeChoice.setText(getString(R.string.power_on_home_state,
                 getString(powerOnHome ? R.string.on : R.string.off)));
     }

@@ -64,6 +64,8 @@
     <string name="original_launcher_off">מסך הבית המקורי מושבת. יש להפעיל אותו מחדש דרך ADB (pm enable או סקריפט השחזור) כדי לפתוח אותו מכאן.</string>
     <string name="power_on_home_state">מסך הבית בהדלקה: %1$s</string>
     <string name="power_on_home_hint">כשהטלוויזיה פותחת שידור חי מעצמה בזמן ההדלקה, לעבור למסך הבית במקום. דורש את מסייע מקש הבית.</string>
+    <string name="featured_state">מדף מומלצים: %1$s</string>
+    <string name="featured_hint">המדף המתחלף מעל ה-Dock, שממלאת אפליקציית הפיד שמוגדרת ב-featured_feed.</string>
     <string name="key_filter_state">מסייע כפתורי השלט: %1$s</string>
     <string name="key_filter_hint">מופעל: המפעיל מטפל בכפתורי ההגדרות והאפליקציות של השלט, אבל בחלק מהטלוויזיות לחיצה ממושכת על עוצמת הקול זזה רק צעד אחד. כבוי: עוצמת הקול חוזרת שוב, והכפתורים האלה לא עושים דבר.</string>
     <string name="on">פעיל</string>

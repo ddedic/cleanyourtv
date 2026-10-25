@@ -287,6 +287,10 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     /** library_grid and settings_menu (Config). */
     private boolean libraryGrid;
     private boolean settingsMenu;
+    /** featured_feed: the rotating shelf above the dock, or null when no feed is set. */
+    private FeaturedShelf featured;
+    /** dock_title: the app's name above the dock, which the featured shelf takes over while it has items. */
+    private boolean dockTitleShown;
     private boolean libraryFocusPending;
     private RecyclerView.OnScrollListener pendingFocusScroll;
 
@@ -450,6 +454,28 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         // dock_title false: the name above the dock (and the cinematic lines under it) never shows; the glow
         // still follows the dock.
         if (!cfg.dockTitle) hero.setVisibility(View.GONE);
+        dockTitleShown = cfg.dockTitle;
+        if (!cfg.featuredFeed.isEmpty()) {
+            featured = new FeaturedShelf(this, root, R.id.ambient, cfg.featuredFeed, cfg.featuredSeconds, animations,
+                    new FeaturedShelf.Host() {
+                        @Override public void onFeaturedShown(boolean shown) {
+                            hero.setVisibility(shown || !dockTitleShown ? View.GONE : View.VISIBLE);
+                        }
+                        @Override public void focusDock() {
+                            focusTile(singleRow ? lastFocused : lastFocused % COLUMNS);
+                        }
+                        @Override public void focusTopBar() {
+                            (btnInputs.getVisibility() == View.VISIBLE ? btnInputs : firstTopButton()).requestFocus();
+                        }
+                        @Override public void slideDock(float dy, Runnable then) {
+                            grid.animate().cancel();
+                            if (grid.getTranslationY() == dy) { then.run(); return; }
+                            grid.animate().translationY(dy).setDuration(animations && !reducedMotion ? 320 : 0)
+                                    .setInterpolator(new android.view.animation.DecelerateInterpolator(1.6f))
+                                    .withEndAction(then).start();
+                        }
+                    });
+        }
         greeting = findViewById(R.id.greeting);
         clockBlock = findViewById(R.id.leftBlock);
         greetingColor = greeting.getCurrentTextColor();
@@ -776,6 +802,8 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             if (event.getAction() != KeyEvent.ACTION_DOWN) return false;
             if (keyCode == KeyEvent.KEYCODE_DPAD_UP) return true;
             if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN) {
+                // featured_feed: the shelf sits between the top bar and the dock.
+                if (focusFeatured()) return true;
                 // Back to the dock tile Up came from, not wherever the focus finder lands.
                 focusTile(singleRow ? lastFocused : lastFocused % COLUMNS);
                 return true;
@@ -941,6 +969,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             return;
         }
         restartIdleClock();
+        if (featured != null) featured.start();
         promptsPaused = false;
         if (grid.getAdapter() == null) grid.setAdapter(adapter);   // dropped by onTrimMemory
         switch (tileRefresh.onResume(packagesChangedSinceRebuild())) {
@@ -1144,6 +1173,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     protected void onPause() {
         super.onPause();
         root.removeCallbacks(showIdleClock);
+        if (featured != null) featured.stop();
         endReorder();   // Home or another app while reordering keeps the order so far
         wallpaperPlayer.stop();
         stopAmbientAnimation();
@@ -1696,6 +1726,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             }
             showHero(position, scroll ? r.top - dy : r.top);
         } else {
+            if (featured != null) featured.setSuppressed(true);
             // Below the dock (or in a plain grid) the glow follows the tile without the big name; letting it
             // fade out left the grid on plain black.
             showGlowOnly(position);
@@ -1723,7 +1754,15 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
 
     // ---- top shelf -------------------------------------------------------------------------------
 
+    /** featured_feed: focus the shelf if it has something on screen; false leaves the key to the caller. */
+    private boolean focusFeatured() {
+        if (featured == null || !featured.focus()) return false;
+        hideGlass();
+        return true;
+    }
+
     private void showHero(int position, float dockTopInRoot) {
+        if (featured != null) featured.place(dockTopInRoot);
         String label = adapter.labelAt(position);
         int color = adapter.ambientColorAt(position);
         float y = dockTopInRoot - 14 * density - 26 * density - hero.getHeight();
@@ -2243,7 +2282,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         if (singleRow) {
             // One row: Up leaves for the top bar, Down has nowhere to go, and Left/Right walk the whole row,
             // stopping at its two ends (the default focus search scrolls the row to the next tile).
-            if (keyCode == KeyEvent.KEYCODE_DPAD_UP) return false;
+            if (keyCode == KeyEvent.KEYCODE_DPAD_UP) return focusFeatured();
             if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN) return true;
             boolean forward = rtlAppGrid ? keyCode == KeyEvent.KEYCODE_DPAD_LEFT : keyCode == KeyEvent.KEYCODE_DPAD_RIGHT;
             int last = adapter.focusablePosition(count - 1);
@@ -2267,7 +2306,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
                     rtlAppGrid, keyCode == KeyEvent.KEYCODE_DPAD_LEFT);
         }
         if (keyCode == KeyEvent.KEYCODE_DPAD_UP) {
-            if (position < COLUMNS) return false;          // dock row: let focus move to the top bar
+            if (position < COLUMNS) return focusFeatured(); // dock row: the featured shelf, else the top bar
             target = position - COLUMNS;
         } else {
             int lastRowStart = ((count - 1) / COLUMNS) * COLUMNS;
