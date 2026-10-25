@@ -37,7 +37,6 @@
     <string name="key_open">Open</string>
     <string name="key_back">Back</string>
     <string name="key_close">Close</string>
-    <string name="pill_rang">Rang %1$s</string>
     <string name="title_listening">Listening</string>
     <string name="title_connecting">Connecting</string>
     <string name="title_unlinked">Almost there</string>

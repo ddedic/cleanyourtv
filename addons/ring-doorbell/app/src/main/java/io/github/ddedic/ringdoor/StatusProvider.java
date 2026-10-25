@@ -29,10 +29,7 @@ public final class StatusProvider extends ContentProvider {
             String description = unseen > 0 ? getContext().getResources().getQuantityString(R.plurals.unseen, unseen, unseen)
                     : getContext().getString(R.string.no_new_rings);
             String intent = new Intent(getContext(), PreviewActivity.class).toUri(Intent.URI_INTENT_SCHEME);
-            // An unseen ring names its time on the pill ("Rang 22:41"); a seen one leaves the plain door icon.
-            Store.Event ring = unseen > 0 ? store.newestRing() : null;
-            String text = ring == null ? "" : getContext().getString(R.string.pill_rang, Ui.clock(getContext(), ring.at));
-            cursor.addRow(new Object[]{text, "door", String.valueOf(unseen), description, intent});
+            cursor.addRow(new Object[]{"", "door", String.valueOf(unseen), description, intent});
         }
         cursor.setNotificationUri(getContext().getContentResolver(), STATUS);
         return cursor;
