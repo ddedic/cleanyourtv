@@ -19,9 +19,9 @@ an `icon`, hides the pill. Every column is a string; a missing column or a null 
 
 | Column | Shown as | Limit |
 |---|---|---|
-| `text` | The pill's one line, such as `21.4° → 22°`. Empty with an `icon` makes a small round icon pill. | 24 characters, cut with an ellipsis |
+| `text` | The pill's one line, such as `21.4°`. Empty with an `icon` makes a small round icon pill. | 24 characters, cut with an ellipsis |
 | `icon` | One of the launcher's own icons: `thermostat`, `door`, or `flame` (drawn warm orange). Anything else shows none. | |
-| `badge` | A count drawn as a small orange bubble at the pill's top end, such as unseen doorbell rings: `1` to `9`, then `9+`. Empty or `0` shows none. | |
+| `badge` | A mark at the pill's top end. A count, such as unseen doorbell rings, is a small orange bubble: `1` to `9`, then `9+`; empty or `0` shows none. Anything else is a short label in a light tag, such as a target temperature `22.5°`. | 5 characters for a label |
 | `description` | What TalkBack reads instead of `text`, such as "Living room 21.4 degrees, heating to 22". | |
 | `intent` | An `intent:` URI that OK starts, handled as the feed's `intent`: no selector, no URI grants, never one of the launcher's own screens. | |
 

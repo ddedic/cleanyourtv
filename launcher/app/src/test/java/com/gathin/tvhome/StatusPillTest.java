@@ -13,12 +13,15 @@ public class StatusPillTest {
         assertEquals('…', cut.charAt(cut.length() - 1));
     }
 
-    @Test public void theBadgeIsASmallCount() {
+    @Test public void theBadgeIsASmallCountOrAShortLabel() {
         assertEquals("", StatusPill.badge(""));
         assertEquals("", StatusPill.badge("0"));
-        assertEquals("", StatusPill.badge("two"));
         assertEquals("3", StatusPill.badge(" 3 "));
         assertEquals("9+", StatusPill.badge("12"));
+        assertEquals("22.5°", StatusPill.badge(" 22.5° "));
+        assertEquals("heati", StatusPill.badge("heating up"));
+        assertEquals(true, StatusPill.isCount("9+"));
+        assertEquals(false, StatusPill.isCount("22°"));
     }
 
     @Test public void onlyTheLaunchersOwnIconsAreShown() {

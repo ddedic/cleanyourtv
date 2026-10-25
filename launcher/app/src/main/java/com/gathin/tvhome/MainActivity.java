@@ -802,7 +802,8 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             // One round icon: its menu holds All apps, Reorder, Edit dock and both settings pages.
             ((TextView) btnSettings).setText(R.string.settings);
             ((TextView) btnSettings).setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_settings, 0, 0, 0);
-            if (!iconOnlyButtons) makeIconOnly((TextView) btnSettings);
+            // Always: the label set just above would otherwise undo icon_only_buttons and push the gear down.
+            makeIconOnly((TextView) btnSettings);
             btnSettings.setOnClickListener(v -> showSettingsMenu());
         }
         btnSettings.setOnLongClickListener(v -> {
