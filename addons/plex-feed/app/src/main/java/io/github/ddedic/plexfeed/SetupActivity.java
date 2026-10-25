@@ -211,6 +211,7 @@ public final class SetupActivity extends Activity {
             store.setPerSection(next);
             refresh();
         }), buttonParams(14));
+        renderScreensaver();
         content.addView(button(getString(R.string.refresh), this::refresh), buttonParams(32));
         content.addView(button(getString(R.string.change_server), () -> {
             store.setServer(new Plex.Server("", "", "", false, java.util.Collections.emptyList()), "");
@@ -219,6 +220,30 @@ public final class SetupActivity extends Activity {
         }), buttonParams(14));
         content.addView(button(getString(R.string.sign_out), this::signOut), buttonParams(14));
         content.addView(spaced(text(getString(R.string.launcher_hint), 14, 0x80FFFFFF, Typeface.DEFAULT), 32));
+    }
+
+    /** The TV's screensaver: this add-on's artwork on or off, and how long the TV waits. */
+    private void renderScreensaver() {
+        Screensaver saver = new Screensaver(this);
+        if (!saver.canChange()) {
+            content.addView(spaced(text(getString(R.string.screensaver_needs_grant), 15, 0x99FFFFFF, Typeface.DEFAULT), 32));
+            return;
+        }
+        boolean on = saver.isOn();
+        content.addView(button(getString(R.string.screensaver_state, getString(on ? R.string.on : R.string.off)), () -> {
+            if (saver.isOn()) saver.turnOff();
+            else saver.turnOn(saver.minutes());
+            render();
+        }), buttonParams(32));
+        if (!on) return;
+        content.addView(button(getString(R.string.screensaver_wait, saver.minutes()), () -> {
+            int next = Screensaver.MINUTES[0];
+            for (int i = 0; i < Screensaver.MINUTES.length; i++) {
+                if (Screensaver.MINUTES[i] == saver.minutes()) next = Screensaver.MINUTES[(i + 1) % Screensaver.MINUTES.length];
+            }
+            saver.turnOn(next);
+            render();
+        }), buttonParams(14));
     }
 
     private void toggle(String key, int label) {

@@ -25,6 +25,11 @@
     <string name="updating">Updating…</string>
     <string name="failed">Last update failed: %1$s</string>
     <string name="updated">Updated %1$s · %2$d items</string>
+    <string name="screensaver_state">Screensaver with Plex artwork: %1$s</string>
+    <string name="screensaver_wait">Screensaver starts after: %1$d min</string>
+    <string name="screensaver_needs_grant">To switch the screensaver here, run once over ADB: pm grant io.github.ddedic.plexfeed android.permission.WRITE_SECURE_SETTINGS</string>
+    <string name="dream_name">Plex feed artwork</string>
+    <string name="dream_empty">Open Plex feed and sign in to see your Plex artwork here.</string>
     <string name="on">On</string>
     <string name="off">Off</string>
 </resources>

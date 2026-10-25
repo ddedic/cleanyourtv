@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <uses-feature android:name="android.software.leanback" android:required="false" />
     <uses-feature android:name="android.hardware.touchscreen" android:required="false" />
 
     <!-- The only permission: plex.tv for the sign-in and the server list, and your Plex server for the feed. -->
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Optional, granted over ADB only (pm grant): lets the setup screen switch the TV's screensaver and its wait,
+         which Philips firmware offers no other way to reach. Nothing else is written. -->
+    <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS" tools:ignore="ProtectedPermissions" />
 
     <application
         android:allowBackup="false"
@@ -26,6 +30,18 @@
                 <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- Screensaver: the cached artwork, slowly zooming and crossfading. Settings > Screensaver picks it. -->
+        <service
+            android:name=".FeedDream"
+            android:exported="true"
+            android:label="@string/dream_name"
+            android:permission="android.permission.BIND_DREAM_SERVICE">
+            <intent-filter>
+                <action android:name="android.service.dreams.DreamService" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </service>
 
         <!-- Featured feed (docs/specs/feed.md): titles, text and pictures only; no tokens leave the app. -->
         <provider

@@ -21,6 +21,20 @@ and OK opens the item in the Plex app.
 5. In the launcher, set `featured_feed` to `io.github.ddedic.plexfeed.feed` in `config.xml` or a theme, and
    install it. **Launcher settings → Featured shelf** switches the shelf off and on again on the TV.
 
+## Screensaver
+
+**Plex feed artwork** is also a screensaver: each cached backdrop slowly zooms for 20 seconds and crossfades
+into the next, with its title and the time. It reads the cache only and never goes online.
+
+Philips firmware has no screensaver page that Android can open, so the setup screen switches it itself:
+**Screensaver with Plex artwork** on or off, and **Screensaver starts after** 5, 10, 15, 30 or 60 minutes.
+Off puts back exactly what the TV had before. This needs one permission granted once over ADB:
+
+    tools/tv.py 'pm grant io.github.ddedic.plexfeed android.permission.WRITE_SECURE_SETTINGS'
+
+Without it the two rows are replaced by that command. On other TVs, picking **Plex feed artwork** in the TV's
+own screensaver settings works too.
+
 ## How it fetches
 
 Only when asked: the launcher calls the provider's `refresh` each time Home comes to the front, and the
@@ -35,6 +49,7 @@ answering. Only https connections are used.
 | Permission | Why |
 |---|---|
 | `INTERNET` | plex.tv for the sign-in and the list of servers, and your chosen Plex server for the feed and its artwork. Nothing else. |
+| `WRITE_SECURE_SETTINGS` | Optional, granted over ADB only. Writes three settings when you switch the screensaver: `screensaver_enabled`, `screensaver_components` and `screen_off_timeout`, and puts the old values back when you switch it off. Nothing else. |
 
 The account and server tokens stay in the app's private storage. The exported provider serves only titles,
 text, artwork and a link that opens the item in the Plex app, and any app on the TV can read those. No
