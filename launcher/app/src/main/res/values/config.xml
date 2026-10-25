@@ -371,6 +371,9 @@
          "io.github.ddedic.netatmo.status". OK opens that app's screen. The launcher never goes online for it.
          Empty (the default) is off; a theme can set "status_widget". -->
     <string name="status_widget" translatable="false"></string>
+    <!-- Inputs as the last pill before Settings instead of the first, so the status pills and Wi-Fi lead the row.
+         Off by default; a theme can set "inputs_beside_settings": true (pairs well with icon_only_inputs). -->
+    <bool name="inputs_beside_settings">false</bool>
 
     <!-- Apps pre-seeded into the App library's "added" set at startup (config.xml library_apps, or a theme's
          config.json). They show on Home as if the owner had added them in the App library UI, and stay

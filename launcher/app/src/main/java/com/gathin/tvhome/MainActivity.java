@@ -465,7 +465,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
                             focusTile(singleRow ? lastFocused : lastFocused % COLUMNS);
                         }
                         @Override public void focusTopBar() {
-                            (btnInputs.getVisibility() == View.VISIBLE ? btnInputs : firstTopButton()).requestFocus();
+                            (!inputsLast && btnInputs.getVisibility() == View.VISIBLE ? btnInputs : firstTopButton()).requestFocus();
                         }
                         @Override public void slideDock(float dy, Runnable then) {
                             grid.animate().cancel();
@@ -756,6 +756,12 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             topAppButtons.add(pill);
             statusPills.add(new StatusPill(this, pill, authority.trim()));
         }
+        inputsLast = cfg.inputsBesideSettings;
+        if (inputsLast) {
+            ViewGroup bar = findViewById(R.id.topButtons);
+            bar.removeView(btnInputs);
+            bar.addView(btnInputs, bar.indexOfChild(findViewById(R.id.btnSettings)));
+        }
         iconOnlyButtons = cfg.iconOnlyButtons;
         topMenu = cfg.topMenu;
         wifiIconOnly = iconOnlyButtons && cfg.wifiLabelWidth <= 0;
@@ -817,7 +823,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
                 focusTile(singleRow ? lastFocused : lastFocused % COLUMNS);
                 return true;
             }
-            int firstButton = btnInputs.getVisibility() == View.VISIBLE ? R.id.btnInputs : firstTopButton().getId();
+            int firstButton = !inputsLast && btnInputs.getVisibility() == View.VISIBLE ? R.id.btnInputs : firstTopButton().getId();
             int leftButton = rtlMenuBar ? R.id.btnSettings : firstButton;
             int rightButton = rtlMenuBar ? firstButton : R.id.btnSettings;
             if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT) return v.getId() == leftButton;
@@ -2375,6 +2381,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     /** top_bar_apps buttons, in bar order. */
     private final List<View> topAppButtons = new ArrayList<>();
     private final List<StatusPill> statusPills = new ArrayList<>();
+    private boolean inputsLast;
 
     /**
      * Puts each top_bar_apps app in the top bar as a round pill with the app's own logo, left of the network pill.

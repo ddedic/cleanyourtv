@@ -56,3 +56,4 @@ fits the rules; keys from before the rule sit on its wanted list until a screens
 | `featured_seconds` | <img src="switches/featured_seconds.jpg" width="320" alt="featured_seconds on a TV"> |
 | `featured_tint` | <img src="switches/featured_tint.jpg" width="320" alt="featured_tint on a TV"> |
 | `status_widget` | <img src="switches/status_widget.jpg" width="320" alt="status_widget on a TV"> |
+| `inputs_beside_settings` | <img src="switches/inputs_beside_settings.jpg" width="320" alt="inputs_beside_settings on a TV"> |
