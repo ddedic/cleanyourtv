@@ -37,6 +37,8 @@ public final class LauncherSettingsActivity extends Activity {
     private TextView keyFilterChoice;
     private TextView powerOnHomeChoice;
     private TextView featuredChoice;
+    private TextView featuredTintChoice;
+    private boolean featuredTint;
     private boolean keyFilter;
     private boolean powerOnHome;
     private final TextView[] columnChoices = new TextView[4];
@@ -184,10 +186,19 @@ public final class LauncherSettingsActivity extends Activity {
             else open(new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME).setComponent(stock));
         });
         featuredChoice = findViewById(R.id.featuredChoice);
+        featuredTintChoice = findViewById(R.id.featuredTintChoice);
+        featuredTint = config.featuredTint;
         // Shown while a feed is set, and while it is switched off here (Config then reports no feed).
         if (!config.featuredFeed.isEmpty() || !choices.getBoolean(Config.FEATURED_KEY, true)) {
             featuredChoice.setVisibility(View.VISIBLE);
             findViewById(R.id.featuredGroup).setVisibility(View.VISIBLE);
+            featuredTintChoice.setVisibility(View.VISIBLE);
+            featuredTintChoice.setOnClickListener(v -> {
+                featuredTint = !featuredTint;
+                choices.edit().putBoolean(Config.FEATURED_TINT_KEY, featuredTint).apply();
+                changed();
+                refresh();
+            });
             findViewById(R.id.featuredHint).setVisibility(View.VISIBLE);
             featuredChoice.setOnClickListener(v -> {
                 choices.edit().putBoolean(Config.FEATURED_KEY, !choices.getBoolean(Config.FEATURED_KEY, true)).apply();
@@ -379,6 +390,8 @@ public final class LauncherSettingsActivity extends Activity {
         openOnStartChoice.setText(getString(R.string.open_on_start_state, openOnStartLabel()));
         followThemeChoice.setSelected(!hasOnTvChoices());
         keyFilterChoice.setText(getString(R.string.key_filter_state, getString(keyFilter ? R.string.on : R.string.off)));
+        featuredTintChoice.setText(getString(R.string.featured_tint_state,
+                getString(featuredTint ? R.string.on : R.string.off)));
         featuredChoice.setText(getString(R.string.featured_state,
                 getString(choices.getBoolean(Config.FEATURED_KEY, true) ? R.string.on : R.string.off)));
         powerOnHomeChoice.setText(getString(R.string.power_on_home_state,

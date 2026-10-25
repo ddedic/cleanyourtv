@@ -54,3 +54,4 @@ fits the rules; keys from before the rule sit on its wanted list until a screens
 | `library_grid` | <img src="switches/library_grid.jpg" width="320" alt="library_grid on a TV"> |
 | `featured_feed` | <img src="switches/featured_feed.jpg" width="320" alt="featured_feed on a TV"> |
 | `featured_seconds` | <img src="switches/featured_seconds.jpg" width="320" alt="featured_seconds on a TV"> |
+| `featured_tint` | <img src="switches/featured_tint.jpg" width="320" alt="featured_tint on a TV"> |

@@ -83,6 +83,10 @@ final class FeaturedShelf {
     private final float density;
     private final Handler main = new Handler(Looper.getMainLooper());
     private final LruCache<String, Bitmap> pictures = new LruCache<>(3);
+    /** featured_tint: each picture's colour, by image URI, for the gradient and the label. */
+    private final java.util.Map<String, Integer> colours = new java.util.HashMap<>();
+    private final boolean tint;
+    private final GradientDrawable left;
     private final ImageView art;
     private final View scrim;
     private final LinearLayout block;
@@ -102,7 +106,8 @@ final class FeaturedShelf {
     private final ContentObserver observer;
 
     FeaturedShelf(Activity activity, FrameLayout root, int behind, String authority, int seconds, boolean animations,
-                  Host host) {
+                  boolean tint, Host host) {
+        this.tint = tint;
         this.activity = activity;
         this.host = host;
         this.authority = authority;
@@ -121,7 +126,7 @@ final class FeaturedShelf {
         art.setAlpha(0f);
         art.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_NO);
         scrim = new View(activity);
-        GradientDrawable left = new GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT,
+        left = new GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT,
                 new int[]{0xF2000000, 0x99000000, 0x00000000});
         GradientDrawable bottom = new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM,
                 new int[]{0x00000000, 0x33000000, 0xFF000000});
@@ -397,6 +402,7 @@ final class FeaturedShelf {
         Bitmap cached = pictures.get(item.image);
         if (cached != null) {
             setPicture(cached, animate);
+            applyTint(item);
             return;
         }
         int load = generation;
@@ -404,10 +410,15 @@ final class FeaturedShelf {
         ContentResolver resolver = activity.getContentResolver();
         LOADER.execute(() -> {
             Bitmap bitmap = decode(resolver, item.image, maxWidth);
+            Integer colour = tint && bitmap != null ? colourOf(bitmap) : null;
             main.post(() -> {
                 if (load != generation || !started || bitmap == null) return;
                 pictures.put(item.image, bitmap);
-                if (index < list.size() && list.get(index) == item) setPicture(bitmap, animate);
+                if (colour != null) colours.put(item.image, colour);
+                if (index < list.size() && list.get(index) == item) {
+                    setPicture(bitmap, animate);
+                    applyTint(item);
+                }
             });
         });
     }
@@ -424,6 +435,28 @@ final class FeaturedShelf {
             art.setImageBitmap(bitmap);
             art.animate().alpha(target).setDuration(450).start();
         }).start();
+    }
+
+    /** featured_tint: the picture's colour from a 16x9 copy, on the loader thread. */
+    private static Integer colourOf(Bitmap bitmap) {
+        try {
+            Bitmap small = Bitmap.createScaledBitmap(bitmap, 16, 9, true);
+            int[] pixels = new int[16 * 9];
+            small.getPixels(pixels, 0, 16, 0, 0, 16, 9);
+            if (small != bitmap) small.recycle();
+            return FeedRows.accent(pixels);
+        } catch (RuntimeException | OutOfMemoryError unavailable) {
+            return null;
+        }
+    }
+
+    /** featured_tint: the side gradient and the small label take the picture's colour; plain black and grey without. */
+    private void applyTint(Item item) {
+        if (!tint) return;
+        Integer colour = colours.get(item.image);
+        if (colour == null) return;
+        left.setColors(new int[]{FeedRows.shade(colour, 0.36f, 0xF2), FeedRows.shade(colour, 0.5f, 0xA6), 0x00000000});
+        badge.setTextColor(FeedRows.light(colour));
     }
 
     /** Only this feed's own pictures, decoded to at most screen width in RGB_565 (half the memory of ARGB). */

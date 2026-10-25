@@ -22,6 +22,20 @@ public class FeedRowsTest {
         assertEquals(1, FeedRows.sampleSize(0, 1920));
     }
 
+    @Test public void theColourComesFromTheVividPixelsNotTheGreyBackground() {
+        int[] poster = {0xFF202020, 0xFF202020, 0xFF808080, 0xFFE03020, 0xFFE03020, 0xFF000000};
+        int colour = FeedRows.accent(poster);
+        assertTrue(((colour >> 16) & 0xFF) > 0xC0);          // the red wins
+        assertTrue((colour & 0xFF) < 0x40);
+        assertEquals(0xFF808080, FeedRows.accent(new int[]{0xFF101010, 0xFF404040}));
+    }
+
+    @Test public void theShadeIsDarkAndTheLabelIsLight() {
+        assertEquals(0x99141414, FeedRows.shade(0xFF505050, 0.25f, 0x99));
+        int light = FeedRows.light(0xFF000000);
+        assertEquals(0xFF8C8C8C, light);
+    }
+
     @Test public void longTextIsCutWithAnEllipsis() {
         assertEquals("Short", FeedRows.clip("Short", 10));
         assertEquals("Abcdefghi…", FeedRows.clip("Abcdefghijklmnop", 10));

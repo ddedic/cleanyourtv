@@ -79,6 +79,7 @@
     <string name="settings_group_remote">Remote &amp; power</string>
     <string name="settings_group_tv">TV &amp; system</string>
     <string name="featured_state">Featured shelf: %1$s</string>
+    <string name="featured_tint_state">Colour from artwork: %1$s</string>
     <string name="featured_hint">The rotating shelf above the dock, filled by the feed app set in featured_feed.</string>
     <string name="key_filter_state">Remote button helper: %1$s</string>
     <string name="key_filter_hint">On: the launcher handles the remote\'s Settings and app buttons, but some TVs then step Volume only once when held. Off: Volume repeats again and those buttons do nothing.</string>

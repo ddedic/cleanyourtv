@@ -55,6 +55,53 @@ final class FeedRows {
         return true;
     }
 
+    /**
+     * featured_tint: the picture's colour from a few of its pixels, each weighted by how saturated and bright it
+     * is, so a poster's grey or black background does not drown its colour. Neutral grey when there is none.
+     */
+    static int accent(int[] pixels) {
+        double r = 0, g = 0, b = 0, total = 0;
+        for (int p : pixels) {
+            int pr = (p >> 16) & 0xFF, pg = (p >> 8) & 0xFF, pb = p & 0xFF;
+            int max = Math.max(pr, Math.max(pg, pb)), min = Math.min(pr, Math.min(pg, pb));
+            if (max == 0) continue;
+            double weight = ((max - min) / (double) max) * (max / 255.0);
+            r += pr * weight;
+            g += pg * weight;
+            b += pb * weight;
+            total += weight;
+        }
+        if (total < 0.05) return 0xFF808080;
+        return vivid((int) (r / total), (int) (g / total), (int) (b / total));
+    }
+
+    /** Pushes an averaged colour away from grey, since averaging pixels washes it out. */
+    private static int vivid(int r, int g, int b) {
+        int grey = (r + g + b) / 3;
+        return 0xFF000000 | (boost(r, grey) << 16) | (boost(g, grey) << 8) | boost(b, grey);
+    }
+
+    private static int boost(int channel, int grey) {
+        return Math.max(0, Math.min(255, Math.round(grey + (channel - grey) * 1.6f)));
+    }
+
+    /** The colour darkened to `amount` of its brightness, with this alpha: the shelf's tinted gradient. */
+    static int shade(int color, float amount, int alpha) {
+        int r = Math.round(((color >> 16) & 0xFF) * amount), g = Math.round(((color >> 8) & 0xFF) * amount);
+        int b = Math.round((color & 0xFF) * amount);
+        return (alpha << 24) | (r << 16) | (g << 8) | b;
+    }
+
+    /** The colour lifted towards white, readable as small text on the dark shelf. */
+    static int light(int color) {
+        int r = (color >> 16) & 0xFF, g = (color >> 8) & 0xFF, b = color & 0xFF;
+        return 0xFF000000 | (lift(r) << 16) | (lift(g) << 8) | lift(b);
+    }
+
+    private static int lift(int channel) {
+        return channel + Math.round((255 - channel) * 0.55f);
+    }
+
     /** The power-of-two step that brings a picture down to at most maxWidth. */
     static int sampleSize(int width, int maxWidth) {
         int sample = 1;

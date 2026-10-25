@@ -161,6 +161,11 @@
                 android:visibility="gone" />
 
             <TextView
+                android:id="@+id/featuredTintChoice"
+                style="@style/SettingsRow"
+                android:visibility="gone" />
+
+            <TextView
                 android:id="@+id/featuredHint"
                 style="@style/SettingsHint"
                 android:text="@string/featured_hint"

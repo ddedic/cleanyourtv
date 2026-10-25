@@ -457,7 +457,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         dockTitleShown = cfg.dockTitle;
         if (!cfg.featuredFeed.isEmpty()) {
             featured = new FeaturedShelf(this, root, R.id.ambient, cfg.featuredFeed, cfg.featuredSeconds, animations,
-                    new FeaturedShelf.Host() {
+                    cfg.featuredTint, new FeaturedShelf.Host() {
                         @Override public void onFeaturedShown(boolean shown) {
                             hero.setVisibility(shown || !dockTitleShown ? View.GONE : View.VISIBLE);
                         }
