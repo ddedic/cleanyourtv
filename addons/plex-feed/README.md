@@ -58,7 +58,8 @@ side too, remove "CleanYourTV Plex Feed" under Authorized Devices on plex.tv.
 
 ## Notes
 
-- OK opens the item in the Plex app with a `plex://` link; when Plex starts cold it may ask "Who's
-  watching?" first.
+- OK opens the Plex app. It sends the item's `plex://` link too, but the Plex app for Android TV (tested
+  October 2026) does not act on it, details or play, so Plex opens on its own home screen. When Plex starts
+  cold it may ask "Who's watching?" first.
 - A show you are watching is not repeated as "New episodes".
 - Tested on a Philips 65PUS8545/12 (TPM191E, Android TV 12, STT2.230526.001) with a shared remote server.

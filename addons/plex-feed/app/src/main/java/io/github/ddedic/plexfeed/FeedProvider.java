@@ -39,7 +39,7 @@ public final class FeedProvider extends ContentProvider {
                     : new Intent(Intent.ACTION_VIEW, Uri.parse(link)).setPackage(PLEX_APP).toUri(Intent.URI_INTENT_SCHEME);
             cursor.addRow(new Object[]{item.optString("title"), item.optString("subtitle"), item.optString("summary"),
                     item.optString("badge"), art.isEmpty() ? "" : "content://" + AUTHORITY + "/art/" + art, intent,
-                    PLEX_APP, "Open in Plex"});
+                    PLEX_APP, "Open Plex"});
         }
         cursor.setNotificationUri(getContext().getContentResolver(), ITEMS);
         return cursor;
