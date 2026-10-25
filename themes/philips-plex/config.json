@@ -10,6 +10,7 @@
   "library_grid": true,
   "library_ok_opens": true,
   "featured_feed": "io.github.ddedic.plexfeed.feed",
+  "icon_only_buttons": true,
   "icon_only_inputs": true,
   "inputs_beside_settings": true,
   "status_widget": "io.github.ddedic.netatmo.status,io.github.ddedic.ringdoor.status"
