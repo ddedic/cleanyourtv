@@ -1,0 +1,13 @@
+{
+  "dock_apps": ["eu.siptv.video", "com.plexapp.android", "com.sarmaplayer.tv", "com.boothwall.cloud.androidtv", "com.netflix.ninja"],
+  "hidden_apps": ["org.droidtv.playtv"],
+  "live_tv_package": "org.droidtv.playtv",
+  "power_on_home": true,
+  "columns": 5,
+  "settings_menu": true,
+  "tile_menu": true,
+  "app_library": true,
+  "library_grid": true,
+  "library_ok_opens": true,
+  "featured_feed": "io.github.ddedic.plexfeed.feed"
+}

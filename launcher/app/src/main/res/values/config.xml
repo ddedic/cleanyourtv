@@ -17,11 +17,10 @@
 
     <!-- Apps pinned to the dock row at the bottom, in this order. Missing apps are skipped. -->
     <string-array name="dock_apps">
-        <item>eu.siptv.video</item>
-        <item>com.plexapp.android</item>
-        <item>com.sarmaplayer.tv</item>
-        <item>com.boothwall.cloud.androidtv</item>
         <item>com.netflix.ninja</item>
+        <item>com.amazon.amazonvideo.livingroom</item>
+        <item>com.google.android.youtube.tv</item>
+        <item>in.startv.hotstar</item>
     </string-array>
     <!-- With fewer dock_apps than columns (or a dock app that is not installed), the free dock slots take
          the first grid apps, so the dock never shows a gap. false leaves them empty (#162); a theme can
@@ -30,11 +29,12 @@
 
     <!-- Apps never shown as tiles (e.g. the Live TV app, which the Inputs menu already covers). -->
     <string-array name="hidden_apps">
-        <item>org.droidtv.playtv</item>
+        <item>com.mediatek.wwtv.tvcenter</item>
+        <item>com.mitv.gallery</item>
     </string-array>
 
     <!-- The TV's Live TV / tuner app, offered at the end of the Inputs menu. Leave empty to omit. -->
-    <string name="live_tv_package" translatable="false">org.droidtv.playtv</string>
+    <string name="live_tv_package" translatable="false">com.mediatek.wwtv.tvcenter</string>
 
     <!-- Open the Live TV app above the first time Home comes up after the TV is switched on, for sets that are
          mostly used for broadcast TV. Once per boot: Home after that stays Home. Can also be set with
@@ -204,7 +204,7 @@
          on, HomeKeyService (HOME_KEY_SERVICE=1) sends a Live TV window back to Home; the first key hands control
          to the user, so opening Live TV on purpose is never undone. The opposite of boot_to_live_tv, and ignored
          when that is on. A theme's config.json can set it too. Off by default. -->
-    <bool name="power_on_home">true</bool>
+    <bool name="power_on_home">false</bool>
 
     <!-- Show the Solar Hijri (Shamsi) date used in Iran and Afghanistan, e.g. "27 Mehr 1405", above the
          Gregorian date. -->
@@ -237,7 +237,7 @@
          Reorder apps, Edit dock, Launcher settings and TV system settings. Turn reorder_button, library_button and
          launcher_settings_button off with it, so the top bar is Inputs, Wi-Fi and this icon. Off by default; a
          theme can set "settings_menu": true. Ignored with top_menu. -->
-    <bool name="settings_menu">true</bool>
+    <bool name="settings_menu">false</bool>
     <!-- A direct Launcher settings action instead of TV Settings in the header (or top_menu).
          Off by default; a theme can set "launcher_settings_button": true. -->
     <bool name="launcher_settings_button">false</bool>
@@ -314,7 +314,7 @@
     <!-- Hold OK on a tile opens a small menu: Move (picks the tile up for reordering), Remove from Home (only with
          app_library) and App info. false keeps the old behaviour: holding OK opens the app's App info page.
          Can also be set with "tile_menu": true in a theme's config.json. -->
-    <bool name="tile_menu">true</bool>
+    <bool name="tile_menu">false</bool>
 
     <!-- Grid rows left visible under the dock on the home screen. 0 = dock sits at the very bottom. Tiles shrink if
          the dock, its title and this many rows would not otherwise fit the screen height. -->
@@ -326,7 +326,7 @@
 
     <!-- Tiles per row in the grid; the dock always has this many slots. Tiles are 180dp wide at 4 columns and
          shrink to fit from 5 up (about 144dp at 5, 117dp at 6 on a 1080p TV). -->
-    <integer name="columns">5</integer>
+    <integer name="columns">4</integer>
 
     <!-- Basic motion is on; advanced effects are opt-in in the launcher's own Settings screen. -->
     <bool name="animations">true</bool>
@@ -337,7 +337,7 @@
     <bool name="show_home_settings_shortcut">false</bool>
 
     <!-- Installed launchable apps, including ordinary Android apps. Also settable in config.json. -->
-    <bool name="app_library">true</bool>
+    <bool name="app_library">false</bool>
     <!-- Every app tile is its icon on a card tinted from that icon, name only under the focused tile,
          instead of each app's own banner. Off by default; a theme can set "uniform_tiles": true. -->
     <bool name="uniform_tiles">false</bool>
@@ -347,19 +347,19 @@
     <!-- OK opens every app in the library, not only the apps on Home: for a library that holds the apps a theme
          keeps off Home with hidden_apps. Hold OK still offers Add to Home. app_library_selection wins when both are
          on. Off by default; a theme can set "library_ok_opens": true (also needs app_library). -->
-    <bool name="library_ok_opens">true</bool>
+    <bool name="library_ok_opens">false</bool>
     <!-- The app library as a full-screen grid that scrolls down: app banners like the Home tiles, A to Z, a check
          on apps that are on Home, and no entries whose only name is a package or class name (firmware internals).
          Hold OK adds to or removes from Home, or Add to dock for an app on Home. Off by default (the one-row
          shelf); a theme can set "library_grid": true. Pair it with library_ok_opens. -->
-    <bool name="library_grid">true</bool>
+    <bool name="library_grid">false</bool>
     <!-- A rotating featured shelf above the dock, Netflix style: each item's backdrop over the screen with its
          title, a line under it and a short summary, the next one every featured_seconds while Home is on screen.
          The items come from another app's content provider (docs/specs/feed.md), named here by its authority, for
          example the Plex feed add-on's "io.github.ddedic.plexfeed.feed". Up from the dock focuses the shelf; Left and
          Right step through it, OK opens the item. The launcher never goes online for it. Empty (the default) is
          off; a theme can set "featured_feed". Launcher settings can switch a set feed off on the TV. -->
-    <string name="featured_feed" translatable="false">io.github.ddedic.plexfeed.feed</string>
+    <string name="featured_feed" translatable="false"></string>
     <!-- Seconds each featured item stays, 4 to 60. A theme can set "featured_seconds". -->
     <integer name="featured_seconds">8</integer>
     <!-- With featured_feed, each picture's colour tints the shelf's side gradient and its small label, so every
