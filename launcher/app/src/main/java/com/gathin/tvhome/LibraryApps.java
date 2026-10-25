@@ -113,6 +113,14 @@ final class LibraryApps {
         return !selection && (openAll || onHome);
     }
 
+    /**
+     * library_grid: a label that is only a package or class name ("org.droidtv.devicesetup.LanguageActivity"),
+     * which firmware internals with no android:label show. Real names have a space or no dotted segments.
+     */
+    static boolean looksLikeComponentName(String label) {
+        return label != null && label.matches("[A-Za-z_$][\\w$]*(\\.[A-Za-z_$][\\w$]*)+");
+    }
+
     static boolean recent(long installedAt, long now) {
         return installedAt > 0 && installedAt <= now && now - installedAt <= RECENT_MS;
     }

@@ -27,6 +27,16 @@ public class LibraryAppsTest {
         assertFalse(LibraryApps.okOpens(true, false, true));
     }
 
+    @Test public void theGridSkipsLabelsThatAreOnlyAPackageOrClassName() {
+        assertTrue(LibraryApps.looksLikeComponentName("org.droidtv.devicesetup.LanguageActivity"));
+        assertTrue(LibraryApps.looksLikeComponentName("org.droidtv.nettvregistration"));
+        assertFalse(LibraryApps.looksLikeComponentName("TIF Test"));
+        assertFalse(LibraryApps.looksLikeComponentName("Netflix"));
+        assertFalse(LibraryApps.looksLikeComponentName("Disney+"));
+        assertFalse(LibraryApps.looksLikeComponentName("Dr. Who"));
+        assertFalse(LibraryApps.looksLikeComponentName(null));
+    }
+
     @Test public void hidingKeepsTheNextAppOrThePreviousAppAtTheEnd() {
         assertEquals(1, LibraryApps.nextAfterRemoval(0, 5));
         assertEquals(3, LibraryApps.nextAfterRemoval(2, 5));

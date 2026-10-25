@@ -284,6 +284,9 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     private AppLibraryDialog appLibrary;
     private boolean appLibrarySelection;
     private boolean libraryOkOpens;
+    /** library_grid and settings_menu (Config). */
+    private boolean libraryGrid;
+    private boolean settingsMenu;
     private boolean libraryFocusPending;
     private RecyclerView.OnScrollListener pendingFocusScroll;
 
@@ -379,6 +382,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         Config cfg = Config.load(this);
         appLibrarySelection = cfg.appLibrarySelection;
         libraryOkOpens = cfg.libraryOkOpens;
+        libraryGrid = cfg.libraryGrid;
         // restore_key_services: after a force stop, put back the remote's accessibility helpers that Android took
         // off the list (needs WRITE_SECURE_SETTINGS, granted by build-and-install with RESTORE_KEY_SERVICES=1).
         if (cfg.restoreKeyServices) ServiceRepair.restore(this);
@@ -752,6 +756,14 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             makeIconOnly((TextView) btnSettings);
         }
         if (cfg.iconOnlyInputs) makeIconOnly((TextView) btnInputs);
+        settingsMenu = cfg.settingsMenu && !cfg.topMenu;
+        if (settingsMenu) {
+            // One round icon: its menu holds All apps, Reorder, Edit dock and both settings pages.
+            ((TextView) btnSettings).setText(R.string.settings);
+            ((TextView) btnSettings).setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_settings, 0, 0, 0);
+            if (!iconOnlyButtons) makeIconOnly((TextView) btnSettings);
+            btnSettings.setOnClickListener(v -> showSettingsMenu());
+        }
         btnSettings.setOnLongClickListener(v -> {
             showSettingsMenu();
             return true;
@@ -1579,16 +1591,35 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             openPopup = null;
             if (libraryFromTopBar) {
                 libraryFromTopBar = false;
-                btnLibraryTop.requestFocus();
+                // settings_menu: opened from the Settings icon's menu, so focus goes back to that icon.
+                (btnLibraryTop.getVisibility() == View.VISIBLE ? btnLibraryTop : findViewById(R.id.btnSettings)).requestFocus();
                 return;
             }
             libraryFocusPending = true;
             grid.post(() -> {
                 if (libraryFocusPending && appLibrary == null && hasWindowFocus() && !isFinishing()) focusLibrary();
             });
-        });
+        }, libraryGrid);
+        appLibrary.setDockAction(this::canDockFromLibrary, this::dockFromLibrary);
         openPopup = appLibrary.popup;
         appLibrary.show();
+    }
+
+    /** library_grid's Add to dock: an app on Home that is not in the dock yet. */
+    private boolean canDockFromLibrary(String pkg) {
+        if (!dockRow) return false;
+        for (int i = COLUMNS; i < adapter.movableCount(); i++) if (pkg.equals(adapter.packageAt(i))) return true;
+        return false;
+    }
+
+    /** Picks the app's Home tile for edit-dock mode, which then asks for its place in the dock. */
+    private void dockFromLibrary(String pkg) {
+        for (int i = COLUMNS; i < adapter.movableCount(); i++) {
+            if (pkg.equals(adapter.packageAt(i))) {
+                startDockEditFor(adapter.keyAt(i), false);
+                return;
+            }
+        }
     }
 
     @Override
@@ -3176,7 +3207,17 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         View panel = getLayoutInflater().inflate(R.layout.popup_inputs, root, false);
         LinearLayout rows = panel.findViewById(R.id.rows);
         PopupWindow popup = glassPopup(panel, (int) (200 * density));
-        if (!launcherSettingsButton) addSettingsMenuRow(rows, popup, R.string.launcher_settings, () -> startActivityForResult(
+        if (settingsMenu) {
+            if (appLibraryEnabled) addSettingsMenuRow(rows, popup, R.string.all_apps, () -> {
+                onLibraryRequested();
+                libraryFromTopBar = true;
+            });
+            addSettingsMenuRow(rows, popup, R.string.reorder, this::toggleReorder);
+            if (dockRow) addSettingsMenuRow(rows, popup, R.string.dock_edit, this::startDockEdit);
+            addSettingsMenuRow(rows, popup, R.string.launcher_settings, () -> startActivityForResult(
+                    new Intent(this, LauncherSettingsActivity.class), LAUNCHER_SETTINGS_REQUEST));
+            addSettingsMenuRow(rows, popup, R.string.tv_settings, () -> open(systemIntent(Settings.ACTION_SETTINGS)));
+        } else if (!launcherSettingsButton) addSettingsMenuRow(rows, popup, R.string.launcher_settings, () -> startActivityForResult(
                 new Intent(this, LauncherSettingsActivity.class), LAUNCHER_SETTINGS_REQUEST));
         // Firmware that ships its own settings app next to the AOSP one (Xiaomi China is one): the
         // vendor app holds pages the AOSP settings has no row for, such as Account & Security with
@@ -3188,8 +3229,10 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             });
         }
         if (moduleCards) addSettingsMenuRow(rows, popup, R.string.module_cards, this::showModuleCards);
-        if (dockRow) addSettingsMenuRow(rows, popup, R.string.dock_edit, this::startDockEdit);
-        addSettingsMenuRow(rows, popup, R.string.reorder, this::toggleReorder);
+        if (!settingsMenu) {
+            if (dockRow) addSettingsMenuRow(rows, popup, R.string.dock_edit, this::startDockEdit);
+            addSettingsMenuRow(rows, popup, R.string.reorder, this::toggleReorder);
+        }
         panel.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
         popup.setWidth(Math.max((int) (200 * density), panel.getMeasuredWidth()));
         // Hebrew puts Settings at the left of the header: grow the menu inward from it.
