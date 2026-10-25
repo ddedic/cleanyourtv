@@ -10,5 +10,5 @@
   "library_grid": true,
   "library_ok_opens": true,
   "featured_feed": "io.github.ddedic.plexfeed.feed",
-  "status_widget": "io.github.ddedic.netatmo.status"
+  "status_widget": "io.github.ddedic.netatmo.status,io.github.ddedic.ringdoor.status"
 }
