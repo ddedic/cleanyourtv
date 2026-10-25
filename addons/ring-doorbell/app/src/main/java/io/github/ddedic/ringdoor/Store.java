@@ -230,6 +230,11 @@ final class Store {
         return true;
     }
 
+    Event newestRing() {
+        for (Event e : events()) if (e.ding()) return e;
+        return null;
+    }
+
     long lastEvent() { return prefs.getLong("last_event", 0); }
     int unseen() { return prefs.getInt("unseen", 0); }
     void seen() { prefs.edit().putInt("unseen", 0).apply(); }

@@ -64,52 +64,39 @@ final class DoorOverlay {
 
         LinearLayout card = new LinearLayout(app);
         card.setOrientation(LinearLayout.VERTICAL);
-        int pad = Ui.dp(app, 16);
+        int pad = Ui.dp(app, 12);
         card.setPadding(pad, pad, pad, Ui.dp(app, 14));
-        card.setBackground(Ui.rounded(app, Ui.CARD, 26, 0x33FFFFFF));
-        card.setElevation(Ui.dp(app, 12));
+        int accent = event.ding() ? Ui.RING : Ui.MOTION;
+        card.setBackground(Ui.rounded(app, Ui.CARD, 28, (accent & 0x00FFFFFF) | 0x99000000));
+        card.setElevation(Ui.dp(app, 16));
 
-        FrameLayout frame = new FrameLayout(app);
-        frame.setBackground(Ui.rounded(app, 0xFF1C2028, 18, 0));
-        Ui.clip(frame, Ui.dp(app, 18));
-        ImageView placeholder = Ui.icon(app, R.drawable.ic_door, 0x55FFFFFF, 56);
-        frame.addView(placeholder, new FrameLayout.LayoutParams(Ui.dp(app, 56), Ui.dp(app, 56), Gravity.CENTER));
-        picture = new ImageView(app);
-        picture.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        frame.addView(picture, new FrameLayout.LayoutParams(-1, -1));
-        TextView live = Ui.medium(app, app.getString(event.ding() ? R.string.at_the_door : R.string.motion_badge), 12, 0xFFFFFFFF);
-        live.setLetterSpacing(0.15f);
-        live.setPadding(Ui.dp(app, 10), Ui.dp(app, 4), Ui.dp(app, 10), Ui.dp(app, 4));
-        live.setBackground(Ui.rounded(app, event.ding() ? Ui.RING : Ui.ACCENT, 12, 0));
-        FrameLayout.LayoutParams badge = new FrameLayout.LayoutParams(-2, -2, Gravity.TOP | Gravity.START);
-        badge.setMargins(Ui.dp(app, 12), Ui.dp(app, 12), 0, 0);
-        frame.addView(live, badge);
-        int width = Ui.dp(app, 520);
-        card.addView(frame, new LinearLayout.LayoutParams(-1, (width - 2 * pad) * 9 / 16));
+        FrameLayout frame = Ui.pictureFrame(app, app.getString(R.string.picture_coming), 20);
+        picture = (ImageView) frame.getChildAt(1);
+        Ui.caption(app, frame, Ui.badge(app, app.getString(event.ding() ? R.string.at_the_door : R.string.motion_badge), accent),
+                event.device);
+        int width = Ui.dp(app, 480);
+        card.addView(frame, new LinearLayout.LayoutParams(-1, -2));
 
         LinearLayout title = new LinearLayout(app);
-        title.setOrientation(LinearLayout.HORIZONTAL);
         title.setGravity(Gravity.CENTER_VERTICAL);
-        title.setPadding(Ui.dp(app, 4), Ui.dp(app, 14), Ui.dp(app, 4), 0);
-        title.addView(Ui.icon(app, R.drawable.ic_door, Ui.RING, 26));
-        LinearLayout lines = new LinearLayout(app);
-        lines.setOrientation(LinearLayout.VERTICAL);
-        lines.setPadding(Ui.dp(app, 14), 0, 0, 0);
-        lines.addView(Ui.medium(app, event.device, 22, 0xFFFFFFFF));
-        lines.addView(Ui.text(app, app.getString(event.ding() ? R.string.someone_rang
-                : "human".equals(event.subType) ? R.string.person_seen : R.string.motion_seen), 15, Ui.DIM));
-        title.addView(lines, new LinearLayout.LayoutParams(0, -2, 1));
-        TextView hint = Ui.text(app, app.getString(R.string.overlay_hint), 13, Ui.DIM);
-        title.addView(hint);
+        title.setPadding(Ui.dp(app, 6), Ui.dp(app, 12), Ui.dp(app, 4), 0);
+        TextView what = Ui.medium(app, app.getString(event.ding() ? R.string.someone_rang
+                : "human".equals(event.subType) ? R.string.person_seen : R.string.motion_seen), 18, Ui.WHITE);
+        title.addView(what, new LinearLayout.LayoutParams(0, -2, 1));
+        title.addView(key(app, "OK"));
+        title.addView(Ui.text(app, app.getString(R.string.key_open), 13, Ui.DIM), Ui.gapStart(app, 6));
+        title.addView(key(app, app.getString(R.string.key_back)), Ui.gapStart(app, 14));
+        title.addView(Ui.text(app, app.getString(R.string.key_close), 13, Ui.DIM), Ui.gapStart(app, 6));
         card.addView(title);
 
         ProgressBar bar = new ProgressBar(app, null, android.R.attr.progressBarStyleHorizontal);
         bar.setMax(1000);
         bar.setProgress(1000);
-        bar.setProgressTintList(android.content.res.ColorStateList.valueOf(Ui.RING));
+        bar.setProgressTintList(android.content.res.ColorStateList.valueOf(accent));
         bar.setProgressBackgroundTintList(android.content.res.ColorStateList.valueOf(0x22FFFFFF));
         LinearLayout.LayoutParams barAt = new LinearLayout.LayoutParams(-1, Ui.dp(app, 3));
         barAt.topMargin = Ui.dp(app, 12);
+        barAt.leftMargin = barAt.rightMargin = Ui.dp(app, 6);
         card.addView(bar, barAt);
 
         FrameLayout.LayoutParams at = new FrameLayout.LayoutParams(width, -2, Gravity.BOTTOM | Gravity.END);
@@ -135,6 +122,14 @@ final class DoorOverlay {
 
         File ready = new Store(app).snapshotFile(event.id);
         if (ready.isFile()) picture(event.id, ready);
+    }
+
+    /** A remote key drawn as a small keycap. */
+    private static TextView key(Context c, String label) {
+        TextView key = Ui.medium(c, label, 11, Ui.WHITE);
+        key.setPadding(Ui.dp(c, 7), Ui.dp(c, 2), Ui.dp(c, 7), Ui.dp(c, 2));
+        key.setBackground(Ui.rounded(c, 0, 6, 0x66FFFFFF));
+        return key;
     }
 
     /** The snapshot arrived: fade it in if the card for that event is still up. */

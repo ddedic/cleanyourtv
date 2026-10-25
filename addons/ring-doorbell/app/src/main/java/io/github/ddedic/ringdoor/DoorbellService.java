@@ -209,15 +209,12 @@ public final class DoorbellService extends Service {
         if (e == null) return;
         boolean late = System.currentTimeMillis() - Math.max(e.at, relayedAt) > LATE_MS;
         Store.Event event = new Store.Event(e.id, e.kind, e.deviceId, store.deviceName(e.deviceId), e.subType, e.at, late);
-        if (!e.ding() && Store.MOTION_OFF.equals(store.motion())) {
-            store.addEvent(event);   // kept in the list, nothing on screen
-            notifyStatus();
-            return;
-        }
         if (!store.addEvent(event)) return;
         notifyStatus();
         Log.i(TAG, "event " + e.kind + (late ? " (missed)" : ""));
-        boolean show = !late && store.alerts(event);
+        // Motion with alerts off still goes in the list with its picture; it just puts nothing on screen.
+        boolean quiet = !e.ding() && Store.MOTION_OFF.equals(store.motion());
+        boolean show = !late && !quiet && store.alerts(event);
         if (show) {
             main.post(() -> {
                 if (e.ding() && store.pause()) pausePlayback();
@@ -228,6 +225,7 @@ public final class DoorbellService extends Service {
             byte[] jpeg = store.api().snapshot(token(store), e.deviceId, e.at, store.linkedAt());
             store.write(store.snapshotFile(e.id), jpeg);
             store.write(store.latestFile(), jpeg);
+            Log.i(TAG, "event picture: " + jpeg.length / 1024 + " KB");
             notifyStatus();
             if (show) main.post(() -> DoorOverlay.picture(e.id, store.snapshotFile(e.id)));
         } catch (Exception failed) {

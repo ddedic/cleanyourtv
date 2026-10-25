@@ -1,7 +1,6 @@
 package io.github.ddedic.ringdoor;
 
 import android.app.Activity;
-import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
@@ -23,7 +22,7 @@ public final class SettingsActivity extends Activity {
     private static final int[][] QUIET = {{0, 0}, {22, 7}, {23, 7}, {21, 6}, {0, 8}};
 
     private Store store;
-    private LinearLayout rows;
+    private LinearLayout side, rows;
     private String focusKey = "enabled";
 
     @Override
@@ -32,24 +31,22 @@ public final class SettingsActivity extends Activity {
         store = new Store(this);
         FrameLayout root = new FrameLayout(this);
         root.setBackground(Ui.backdrop(this));
-        LinearLayout column = new LinearLayout(this);
-        column.setOrientation(LinearLayout.VERTICAL);
-        column.setPadding(Ui.dp(this, 56), Ui.dp(this, 36), Ui.dp(this, 56), Ui.dp(this, 28));
-        TextView overline = Ui.text(this, getString(R.string.app_name).toUpperCase(), 13, Ui.DIM);
-        overline.setLetterSpacing(0.25f);
-        column.addView(overline);
-        TextView title = Ui.text(this, getString(R.string.settings), 32, 0xFFFFFFFF);
-        title.setTypeface(android.graphics.Typeface.create("sans-serif-light", android.graphics.Typeface.NORMAL));
-        column.addView(title);
+        LinearLayout content = new LinearLayout(this);
+        content.setPadding(Ui.dp(this, 56), Ui.dp(this, 40), Ui.dp(this, 56), Ui.dp(this, 32));
+        side = new LinearLayout(this);
+        side.setOrientation(LinearLayout.VERTICAL);
+        content.addView(side, new LinearLayout.LayoutParams(Ui.dp(this, 300), -1));
         ScrollView scroll = new ScrollView(this);
         scroll.setVerticalScrollBarEnabled(false);
+        scroll.setClipToPadding(false);
+        scroll.setPadding(Ui.dp(this, 6), 0, Ui.dp(this, 6), Ui.dp(this, 16));
         rows = new LinearLayout(this);
         rows.setOrientation(LinearLayout.VERTICAL);
         scroll.addView(rows);
-        LinearLayout.LayoutParams at = new LinearLayout.LayoutParams(Ui.dp(this, 860), -1);
-        at.topMargin = Ui.dp(this, 20);
-        column.addView(scroll, at);
-        root.addView(column, new FrameLayout.LayoutParams(-1, -1));
+        LinearLayout.LayoutParams at = new LinearLayout.LayoutParams(0, -1, 1);
+        at.setMarginStart(Ui.dp(this, 44));
+        content.addView(scroll, at);
+        root.addView(content, new FrameLayout.LayoutParams(-1, -1));
         setContentView(root);
     }
 
@@ -63,6 +60,13 @@ public final class SettingsActivity extends Activity {
         View focused = getCurrentFocus();
         if (focused != null && focused.getTag() instanceof String) focusKey = (String) focused.getTag();
         rows.removeAllViews();
+        side.removeAllViews();
+        side.addView(Ui.overline(this, getString(R.string.app_name)));
+        side.addView(Ui.light(this, getString(R.string.settings), 34, Ui.WHITE));
+        side.addView(Ui.statusCard(this, store), Ui.gapTop(this, -1, 22));
+        TextView about = Ui.text(this, getString(R.string.settings_about), 14, Ui.DIM);
+        about.setLineSpacing(0, 1.2f);
+        side.addView(about, Ui.gapTop(this, -1, 18));
         boolean on = store.enabled();
         section(getString(R.string.section_alerts));
         row("enabled", getString(R.string.set_enabled), getString(R.string.set_enabled_sub), onOff(on), () -> {
@@ -96,13 +100,8 @@ public final class SettingsActivity extends Activity {
             }
         }
         section(getString(R.string.section_ring));
-        info(getString(R.string.set_connection), Ui.state(this, store));
         RingApi.Device chime = store.chime();
-        if (chime != null) {
-            info(getString(R.string.set_chime), chime.name + " · " + getString(!chime.online ? R.string.chime_offline
-                    : chime.snoozed ? R.string.chime_snoozed : R.string.chime_on)
-                    + (chime.volume >= 0 ? " · " + getString(R.string.chime_volume, chime.volume) : ""));
-        }
+        if (chime != null) info(getString(R.string.set_chime), Ui.chimeLine(this, chime));
         if (store.linked()) {
             row("unlink", getString(R.string.set_unlink), getString(R.string.set_unlink_sub), "", () -> {
                 store.unlink();
@@ -115,20 +114,23 @@ public final class SettingsActivity extends Activity {
     }
 
     private void section(String label) {
-        TextView header = Ui.text(this, label.toUpperCase(), 13, Ui.DIM);
-        header.setLetterSpacing(0.25f);
+        TextView header = Ui.overline(this, label);
         LinearLayout.LayoutParams at = new LinearLayout.LayoutParams(-1, -2);
-        at.topMargin = Ui.dp(this, rows.getChildCount() == 0 ? 0 : 24);
-        at.bottomMargin = Ui.dp(this, 4);
+        at.topMargin = Ui.dp(this, rows.getChildCount() == 0 ? 8 : 26);
+        at.bottomMargin = Ui.dp(this, 2);
         rows.addView(header, at);
     }
 
     private void row(String key, String label, String sub, String value, Runnable change) {
         LinearLayout row = item(label, sub, value);
-        row.setFocusable(true);
         row.setTag(key);
-        row.setOnFocusChangeListener((v, has) -> v.setBackground(
-                Ui.rounded(this, has ? 0x40FFFFFF : 0x1AFFFFFF, 18, has ? 0xFFFFFFFF : 0)));
+        LinearLayout lines = (LinearLayout) row.getChildAt(0);
+        TextView chip = row.getChildCount() > 1 ? (TextView) row.getChildAt(1) : null;
+        TextView[] texts = new TextView[lines.getChildCount()];
+        for (int i = 0; i < texts.length; i++) texts[i] = (TextView) lines.getChildAt(i);
+        if (chip != null) row.setOnFocusChangeListener((v, has) ->
+                Ui.chipStyle(this, chip, getString(R.string.on), getString(R.string.off), has));
+        Ui.focusCard(this, row, 18, 0x1AFFFFFF, texts);
         row.setOnClickListener(v -> { focusKey = key; change.run(); render(); });
     }
 
@@ -139,12 +141,12 @@ public final class SettingsActivity extends Activity {
     private LinearLayout item(String label, String sub, String value) {
         LinearLayout row = new LinearLayout(this);
         row.setGravity(Gravity.CENTER_VERTICAL);
-        row.setPadding(Ui.dp(this, 20), Ui.dp(this, 14), Ui.dp(this, 20), Ui.dp(this, 14));
+        row.setPadding(Ui.dp(this, 22), Ui.dp(this, 12), Ui.dp(this, 18), Ui.dp(this, 12));
         row.setBackground(Ui.rounded(this, 0x1AFFFFFF, 18, 0));
-        row.setMinimumHeight(Ui.dp(this, 64));
+        row.setMinimumHeight(Ui.dp(this, 60));
         LinearLayout lines = new LinearLayout(this);
         lines.setOrientation(LinearLayout.VERTICAL);
-        lines.addView(Ui.text(this, label, 18, 0xFFFFFFFF));
+        lines.addView(Ui.medium(this, label, 17, Ui.WHITE));
         if (!sub.isEmpty()) lines.addView(Ui.text(this, sub, 13, Ui.DIM));
         row.addView(lines, new LinearLayout.LayoutParams(0, -2, 1));
         if (!value.isEmpty()) row.addView(Ui.chip(this, value, getString(R.string.on), getString(R.string.off)));

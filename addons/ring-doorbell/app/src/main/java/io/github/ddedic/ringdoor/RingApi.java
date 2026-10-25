@@ -130,7 +130,7 @@ final class RingApi {
 
     /**
      * The picture nearest the event (at_timestamp), or the newest in the last hour when at is 0. Ring stores media a
-     * few seconds after the event, so 416/425 are retried a few times. Returns JPEG bytes.
+     * few seconds after the event, so 416/425 are retried a few times for a fresh one. Returns JPEG bytes.
      */
     byte[] snapshot(String token, String deviceId, long at, long linkedAt) throws IOException, JSONException, InterruptedException {
         JSONObject body = new JSONObject().put("image_options", new JSONObject().put("format", "jpeg"));
@@ -138,7 +138,9 @@ final class RingApi {
         // Ring only releases media recorded after the account was linked.
         else body.put("type", "latest_in_range").put("start_timestamp",
                 Math.max(System.currentTimeMillis() - 3_600_000L, linkedAt + 1000));
-        long[] waits = {0, 5000, 5000, 10000, 20000, 30000};
+        // Only a moment that just happened may still be recording; an older one has its media or never will.
+        boolean fresh = at <= 0 || System.currentTimeMillis() - at < 120_000;
+        long[] waits = fresh ? new long[]{0, 5000, 5000, 10000, 20000, 30000} : new long[]{0};
         IOException last = null;
         for (long wait : waits) {
             if (wait > 0) Thread.sleep(wait);
