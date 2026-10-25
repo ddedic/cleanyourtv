@@ -13,9 +13,18 @@ public class StatusPillTest {
         assertEquals('…', cut.charAt(cut.length() - 1));
     }
 
+    @Test public void theBadgeIsASmallCount() {
+        assertEquals("", StatusPill.badge(""));
+        assertEquals("", StatusPill.badge("0"));
+        assertEquals("", StatusPill.badge("two"));
+        assertEquals("3", StatusPill.badge(" 3 "));
+        assertEquals("9+", StatusPill.badge("12"));
+    }
+
     @Test public void onlyTheLaunchersOwnIconsAreShown() {
         assertEquals(R.drawable.ic_thermostat, StatusPill.icon("thermostat"));
         assertEquals(R.drawable.ic_flame, StatusPill.icon("flame"));
+        assertEquals(R.drawable.ic_door, StatusPill.icon("door"));
         assertEquals(0, StatusPill.icon("android.resource://evil/raw/x"));
         assertEquals(0, StatusPill.icon(null));
     }

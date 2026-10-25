@@ -7,19 +7,21 @@ pill opens that app's own screen for the controls. The [Netatmo add-on](../../ad
 
 ## The provider
 
-The owner sets `status_widget` to the provider's authority, for example `io.github.ddedic.netatmo.status`.
+The owner sets `status_widget` to the provider's authority, for example `io.github.ddedic.netatmo.status`, or to
+several authorities separated by commas for several pills, in that order.
 As with [the featured feed](feed.md), the app needs a `LEANBACK_LAUNCHER` activity so that Android 11 and newer
 let the launcher see its provider.
 
 ### `content://<authority>/status`
 
-A query with no projection, selection or sort. The launcher reads the first row; no row, or an empty `text`,
-hides the pill. Every column is a string; a missing column or a null value counts as empty.
+A query with no projection, selection or sort. The launcher reads the first row; no row, or neither `text` nor
+an `icon`, hides the pill. Every column is a string; a missing column or a null value counts as empty.
 
 | Column | Shown as | Limit |
 |---|---|---|
-| `text` | The pill's one line, such as `21.4° → 22°`. Required. | 24 characters, cut with an ellipsis |
-| `icon` | One of the launcher's own icons: `thermostat`, or `flame` (drawn warm orange). Anything else shows none. | |
+| `text` | The pill's one line, such as `21.4° → 22°`. Empty with an `icon` makes a small round icon pill. | 24 characters, cut with an ellipsis |
+| `icon` | One of the launcher's own icons: `thermostat`, `door`, or `flame` (drawn warm orange). Anything else shows none. | |
+| `badge` | A count drawn as a small orange bubble at the pill's top end, such as unseen doorbell rings: `1` to `9`, then `9+`. Empty or `0` shows none. | |
 | `description` | What TalkBack reads instead of `text`, such as "Living room 21.4 degrees, heating to 22". | |
 | `intent` | An `intent:` URI that OK starts, handled as the feed's `intent`: no selector, no URI grants, never one of the launcher's own screens. | |
 

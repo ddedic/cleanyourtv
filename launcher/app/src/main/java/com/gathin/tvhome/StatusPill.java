@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.util.concurrent.ExecutorService;
@@ -32,6 +33,8 @@ final class StatusPill {
     private final Handler main = new Handler(Looper.getMainLooper());
     private final ContentObserver observer;
     private final android.content.res.ColorStateList iconTint;
+    private final int width, padStart, padEnd, iconPad, round;
+    private final Badge badge;
     private String intent = "";
     private boolean started;
     private int generation;
@@ -43,6 +46,14 @@ final class StatusPill {
         // strings in every language (+51 KB).
         this.status = Uri.parse("content://" + authority + "/status");
         iconTint = pill.getCompoundDrawableTintList();
+        width = pill.getLayoutParams() == null ? ViewGroup.LayoutParams.WRAP_CONTENT : pill.getLayoutParams().width;
+        padStart = pill.getPaddingStart();
+        padEnd = pill.getPaddingEnd();
+        iconPad = pill.getCompoundDrawablePadding();
+        float density = activity.getResources().getDisplayMetrics().density;
+        round = Math.round(42 * density);
+        badge = new Badge(density);
+        pill.getOverlay().add(badge);
         pill.setVisibility(View.GONE);
         pill.setOnClickListener(v -> open());
         observer = new ContentObserver(main) {
@@ -80,29 +91,30 @@ final class StatusPill {
                 try { resolver.call(status, "refresh", null, null); }
                 catch (RuntimeException unavailable) { /* show what it has */ }
             }
-            String text = "", icon = "", description = "", target = "";
+            String text = "", icon = "", description = "", target = "", count = "";
             try (Cursor row = resolver.query(status, null, null, null, null)) {
                 if (row != null && row.moveToFirst()) {
                     text = column(row, "text");
                     icon = column(row, "icon");
                     description = column(row, "description");
                     target = column(row, "intent");
+                    count = column(row, "badge");
                 }
             } catch (RuntimeException unavailable) {
                 text = "";
             }
-            String shown = clean(text), spoken = description, opens = target;
+            String shown = clean(text), spoken = description, opens = target, number = badge(count);
             int drawable = icon(icon);
             main.post(() -> {
                 if (load != generation || !started) return;
-                show(shown, drawable, spoken, opens);
+                show(shown, drawable, spoken, opens, number);
             });
         });
     }
 
-    private void show(String text, int icon, String description, String target) {
+    private void show(String text, int icon, String description, String target, String number) {
         intent = target;
-        if (text.isEmpty()) {
+        if (text.isEmpty() && icon == 0) {
             View next = pill.hasFocus() ? pill.focusSearch(View.FOCUS_RIGHT) : null;
             if (next != null) next.requestFocus();
             pill.setVisibility(View.GONE);
@@ -116,7 +128,16 @@ final class StatusPill {
         pill.setCompoundDrawableTintList(icon == R.drawable.ic_flame ? null : iconTint);
         pill.setCompoundDrawablesRelative(start, null, null, null);
         pill.setContentDescription(description.isEmpty() ? text : description);
+        // No text: a round icon pill like the icon-only Wi-Fi and Settings buttons.
+        boolean iconOnly = text.isEmpty();
+        pill.getLayoutParams().width = iconOnly ? round : width;
+        pill.setPaddingRelative(iconOnly ? (round - start.getIntrinsicWidth()) / 2 : padStart, 0,
+                iconOnly ? (round - start.getIntrinsicWidth()) / 2 : padEnd, 0);
+        pill.setCompoundDrawablePadding(iconOnly ? 0 : iconPad);
+        badge.set(number, pill.getLayoutParams().width == round ? round : pill.getWidth(), round);
         pill.setVisibility(View.VISIBLE);
+        pill.requestLayout();
+        pill.post(() -> badge.set(number, pill.getWidth(), pill.getHeight()));
     }
 
     private void open() {
@@ -140,12 +161,59 @@ final class StatusPill {
         return line.length() <= MAX_TEXT ? line : line.substring(0, MAX_TEXT - 1).trim() + "…";
     }
 
+    /** "1" to "9", or "9+" for more; empty for none or anything that is not a count. */
+    static String badge(String count) {
+        int n;
+        try {
+            n = Integer.parseInt(count == null ? "" : count.trim());
+        } catch (NumberFormatException notACount) {
+            return "";
+        }
+        return n <= 0 ? "" : n > 9 ? "9+" : String.valueOf(n);
+    }
+
     /** The app names one of the launcher's own icons; anything else shows none. */
     static int icon(String name) {
         switch (name == null ? "" : name) {
             case "thermostat": return R.drawable.ic_thermostat;
             case "flame": return R.drawable.ic_flame;
+            case "door": return R.drawable.ic_door;
             default: return 0;
         }
+    }
+
+    /** The small count bubble at the pill's top end, drawn in the pill's overlay. */
+    private static final class Badge extends android.graphics.drawable.Drawable {
+        private final android.graphics.Paint fill = new android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG),
+                label = new android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG);
+        private final float radius;
+        private String text = "";
+
+        Badge(float density) {
+            radius = 8.5f * density;
+            fill.setColor(FLAME);
+            label.setColor(0xFFFFFFFF);
+            label.setTextSize(11 * density);
+            label.setFakeBoldText(true);
+            label.setTextAlign(android.graphics.Paint.Align.CENTER);
+        }
+
+        void set(String value, int pillWidth, int pillHeight) {
+            text = value;
+            int size = Math.round(radius * 2);
+            setBounds(pillWidth - size, 0, pillWidth, size);
+            invalidateSelf();
+        }
+
+        @Override public void draw(android.graphics.Canvas canvas) {
+            if (text.isEmpty()) return;
+            android.graphics.Rect b = getBounds();
+            canvas.drawCircle(b.exactCenterX(), b.exactCenterY(), radius, fill);
+            canvas.drawText(text, b.exactCenterX(), b.exactCenterY() - (label.descent() + label.ascent()) / 2, label);
+        }
+
+        @Override public void setAlpha(int alpha) { }
+        @Override public void setColorFilter(android.graphics.ColorFilter filter) { }
+        @Override public int getOpacity() { return android.graphics.PixelFormat.TRANSLUCENT; }
     }
 }
